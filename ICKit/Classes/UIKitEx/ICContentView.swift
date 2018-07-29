@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ICContentView: UIView {
+open class ICContentView: UIView {
     
     lazy var contentView: UIView = {
         let contentView = UIView()
@@ -16,7 +16,7 @@ class ICContentView: UIView {
         return contentView
     }()
     
-    override var frame: CGRect {
+    override open var frame: CGRect {
         didSet {
             self.setNeedsLayout()
         }
@@ -34,12 +34,12 @@ class ICContentView: UIView {
         self.contentView.frame = UIEdgeInsetsInsetRect(self.bounds, self.contentInsets)
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     
-    override func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         self.contentView.frame = UIEdgeInsetsInsetRect(self.bounds, self.contentInsets)
     }

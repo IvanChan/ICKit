@@ -8,13 +8,13 @@
 
 import UIKit
 
-class ICColorButton: UIButton {
+open class ICColorButton: UIButton {
 
     private lazy var backgroundColorsForStates: [UInt:UIColor] = [:]
     private lazy var borderColorsForStates: [UInt:UIColor] = [:]
     private lazy var tintColorsForStates: [UInt:UIColor] = [:]
     
-    override func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         self.reloadBackgroundColor()
         self.reloadTintColor()

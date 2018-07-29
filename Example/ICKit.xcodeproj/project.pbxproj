@@ -28,7 +28,7 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		8477CF7759C1DD257EE86199 /* ICKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ICKit.podspec; path = ../ICKit.podspec; sourceTree = "<group>"; };
+		8477CF7759C1DD257EE86199 /* ICKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ICKit.podspec; path = ../ICKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9551D5DAB05B1C68DEE455E0 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		9A6A276189211468AA30CF09 /* Pods_ICKit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ICKit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8975D7D43837DB7BC470A30 /* Pods-ICKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ICKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-ICKit_Example/Pods-ICKit_Example.release.xcconfig"; sourceTree = "<group>"; };

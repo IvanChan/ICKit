@@ -49,9 +49,9 @@ open class ICPopupView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open func show() {
+    open func show(inView parentView:UIView ) {
         
-        UIApplication.shared.keyWindow?.rootViewController?.view.addSubview(self)
+        parentView.addSubview(self)
         
         UIView.animate(withDuration: 0.3,
                        delay: 0,
