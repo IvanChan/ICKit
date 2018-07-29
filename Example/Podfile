@@ -1,11 +1,8 @@
 use_frameworks!
 
 target 'ICKit_Example' do
-  pod 'ICKit', :path => '../'
+  pod 'ICKit/ICRes', :path => '../'
+  pod 'ICFoundation', '0.2.2'
+  pod 'ICResourceKit', '0.6.1'
 
-  target 'ICKit_Tests' do
-    inherit! :search_paths
-
-    
-  end
 end

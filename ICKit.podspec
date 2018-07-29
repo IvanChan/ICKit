@@ -31,7 +31,23 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'ICKit/Classes/**/*'
-  
+
+    s.default_subspec = 'Core'
+
+    s.subspec 'Core' do |core|
+    core.source_files = 'ICKit/Classes/**/*'
+    core.exclude_files = 'ICKit/Classes/ICRes/**/*'
+
+    core.dependency 'ICFoundation'
+    end
+
+    s.subspec 'ICRes' do |icres|
+    icres.source_files = 'ICKit/Classes/ICRes/**/*'
+
+    icres.dependency 'ICKit/Core'
+    icres.dependency 'ICResourceKit'
+    end
+
   # s.resource_bundles = {
   #   'ICKit' => ['ICKit/Assets/*.png']
   # }
