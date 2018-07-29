@@ -10,7 +10,7 @@ import UIKit
 
 open class ICContentView: UIView {
     
-    open lazy var contentView: UIView = {
+    public lazy var contentView: UIView = {
         let contentView = UIView()
         self.addSubview(contentView)
         return contentView
@@ -22,7 +22,7 @@ open class ICContentView: UIView {
         }
     }
     
-    var contentInsets: UIEdgeInsets = .zero {
+    public var contentInsets: UIEdgeInsets = .zero {
         didSet {
             self.setNeedsLayout()
         }

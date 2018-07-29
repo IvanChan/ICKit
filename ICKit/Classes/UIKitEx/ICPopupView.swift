@@ -10,12 +10,12 @@ import UIKit
 
 open class ICPopupView: UIView {
     
-    var backgroundMask: UIControl!
-    var containerView: UIView!
-    var contentView: UIView!
+    public var backgroundMask: UIControl!
+    public var containerView: UIView!
+    public var contentView: UIView!
     
-    let edgeMargin = 10
-    static let contentMargin: CGFloat = 20
+    public let edgeMargin = 10
+    public static let contentMargin: CGFloat = 20
     
     public init(containerHeight: CGFloat = 300) {
         
