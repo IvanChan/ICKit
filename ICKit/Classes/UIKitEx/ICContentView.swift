@@ -10,7 +10,7 @@ import UIKit
 
 open class ICContentView: UIView {
     
-    lazy var contentView: UIView = {
+    open lazy var contentView: UIView = {
         let contentView = UIView()
         self.addSubview(contentView)
         return contentView

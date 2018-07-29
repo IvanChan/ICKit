@@ -48,10 +48,14 @@ open class ICPopupView: UIView {
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    open func show(inView parentView:UIView ) {
+
+    open func show(inView parentView:UIView? ) {
         
-        parentView.addSubview(self)
+        if parentView == nil {
+            return
+        }
+        
+        parentView?.addSubview(self)
         
         UIView.animate(withDuration: 0.3,
                        delay: 0,
