@@ -33,7 +33,7 @@ extension ICColorButton {
         self.setTintColor(resGetColor(key), for: state)
     }
     
-    override func didThemeChanged() {
+    override open func didThemeChanged() {
         super.didThemeChanged()
         
         for (key, value) in self.ic_resStateHash(ICColorButton.ICBackgroundColorHashKey) {
