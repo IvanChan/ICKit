@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'ICKit_Example' do
+  pod 'ICKit', :path => '../'
+
+  target 'ICKit_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
