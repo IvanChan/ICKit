@@ -2,7 +2,7 @@ use_frameworks!
 
 target 'ICKit_Example' do
   pod 'ICKit/ICRes', :path => '../'
-  pod 'ICFoundation', '0.2.2'
+  pod 'ICFoundation', '0.2.4'
   pod 'ICResourceKit', '0.6.1'
 
 end

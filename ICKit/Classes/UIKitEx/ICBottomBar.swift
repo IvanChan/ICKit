@@ -12,7 +12,7 @@ import ICFoundation
 open class ICBottomBar: ICContentView {
 
     public init(frame: CGRect) {
-        let deviceBottomMarginHeight = UIScreen.main.ic.deviceBottomMarginHeight()
+        let deviceBottomMarginHeight = UIScreen.main.ic.safeArea().bottom
         var cFrame = frame
         cFrame.size.height += deviceBottomMarginHeight
         super.init(frame: cFrame, contentInsets: UIEdgeInsetsMake(0, 0, deviceBottomMarginHeight, 0))
