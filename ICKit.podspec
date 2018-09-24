@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ICKit'
-  s.version          = '0.2.6'
+  s.version          = '0.3.0'
   s.summary          = 'A common useful dev pack.'
 
 # This description is used to generate tags and improve search results.
@@ -27,25 +27,33 @@ TODO: Add long description of the pod here.
   s.author           = { '_ivanC' => 'aintivanc@icloud.com' }
   s.source           = { :git => 'https://github.com/IvanChan/ICKit.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
- s.swift_version = '4.1'
+  s.swift_version = '4.2'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
 
-    s.default_subspec = 'Core'
+  s.default_subspec = 'Foundation'
 
-    s.subspec 'Core' do |core|
-    core.source_files = 'ICKit/Classes/**/*'
-    core.exclude_files = 'ICKit/Classes/ICRes/**/*'
+  s.subspec 'Foundation' do |foundation|
+    
+    foundation.source_files = 'ICKit/Classes/Foundation/**/*'
 
-    core.dependency 'ICFoundation'
-    end
+  end
 
-    s.subspec 'ICRes' do |icres|
-    icres.source_files = 'ICKit/Classes/ICRes/**/*'
+  s.subspec 'UIKitEx' do |ui|
+    ui.source_files = 'ICKit/Classes/UIKitEx/**/*'
 
-    icres.dependency 'ICKit/Core'
-    icres.dependency 'ICResourceKit'
-    end
+    ui.dependency 'ICKit/Foundation'
+
+  end
+    
+
+  s.subspec 'ResKit' do |res|
+    res.source_files = 'ICKit/Classes/ResKit/**/*'
+
+    res.dependency 'ICKit/Foundation'
+    res.dependency 'GDataXML-HTML'
+    res.dependency 'ICObserver'
+  end
 
   # s.resource_bundles = {
   #   'ICKit' => ['ICKit/Assets/*.png']

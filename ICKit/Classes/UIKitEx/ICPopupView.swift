@@ -41,7 +41,7 @@ open class ICPopupView: UIView {
         self.addSubview(self.containerView)
         
         // Main
-        self.contentView = UIView(frame: UIEdgeInsetsInsetRect(self.containerView.bounds, UIEdgeInsetsMake(ICPopupView.contentMargin/2, ICPopupView.contentMargin, ICPopupView.contentMargin/2, ICPopupView.contentMargin)))
+        self.contentView = UIView(frame: self.containerView.bounds.inset(by: UIEdgeInsets.init(top: ICPopupView.contentMargin/2, left: ICPopupView.contentMargin, bottom: ICPopupView.contentMargin/2, right: ICPopupView.contentMargin)))
         self.containerView.addSubview(self.contentView)
     }
     

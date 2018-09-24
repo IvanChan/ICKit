@@ -28,10 +28,10 @@ open class ICContentView: UIView {
         }
     }
     
-    public init(frame: CGRect, contentInsets: UIEdgeInsets = UIEdgeInsetsMake(20, 20, 20, 20)) {
+    public init(frame: CGRect, contentInsets: UIEdgeInsets = UIEdgeInsets.init(top: 20, left: 20, bottom: 20, right: 20)) {
         super.init(frame: frame)
         self.contentInsets = contentInsets
-        self.contentView.frame = UIEdgeInsetsInsetRect(self.bounds, self.contentInsets)
+        self.contentView.frame = self.bounds.inset(by: self.contentInsets)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -41,6 +41,6 @@ open class ICContentView: UIView {
     
     override open func layoutSubviews() {
         super.layoutSubviews()
-        self.contentView.frame = UIEdgeInsetsInsetRect(self.bounds, self.contentInsets)
+        self.contentView.frame = self.bounds.inset(by: self.contentInsets)
     }
 }

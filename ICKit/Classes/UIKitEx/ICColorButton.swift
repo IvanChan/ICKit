@@ -26,7 +26,7 @@ open class ICColorButton: UIButton {
         self.backgroundColor = self.backgroundColor(for: self.state)
     }
     
-    open func setBackgroundColor(_ color: UIColor?, for state: UIControlState) {
+    open func setBackgroundColor(_ color: UIColor?, for state: UIControl.State) {
         if color == nil {
             self.backgroundColorsForStates.removeValue(forKey: state.rawValue)
         } else {
@@ -35,7 +35,7 @@ open class ICColorButton: UIButton {
         }
     }
     
-    open func backgroundColor(for state: UIControlState) -> UIColor? {
+    open func backgroundColor(for state: UIControl.State) -> UIColor? {
         return self.backgroundColorsForStates[state.rawValue]
     }
     
@@ -44,7 +44,7 @@ open class ICColorButton: UIButton {
         self.tintColor = self.tintColor(for: self.state)
     }
     
-    open func setTintColor(_ color: UIColor?, for state: UIControlState) {
+    open func setTintColor(_ color: UIColor?, for state: UIControl.State) {
         if color == nil {
             self.tintColorsForStates.removeValue(forKey: state.rawValue)
         } else {
@@ -53,7 +53,7 @@ open class ICColorButton: UIButton {
         }
     }
     
-    open func tintColor(for state: UIControlState) -> UIColor? {
+    open func tintColor(for state: UIControl.State) -> UIColor? {
         return self.tintColorsForStates[state.rawValue]
     }
     
@@ -62,7 +62,7 @@ open class ICColorButton: UIButton {
         self.backgroundColor = self.borderColor(for: self.state)
     }
     
-    open func setBorderColor(_ color: UIColor?, for state: UIControlState) {
+    open func setBorderColor(_ color: UIColor?, for state: UIControl.State) {
         if color == nil {
             self.borderColorsForStates.removeValue(forKey: state.rawValue)
         } else {
@@ -71,7 +71,7 @@ open class ICColorButton: UIButton {
         }
     }
     
-    open func borderColor(for state: UIControlState) -> UIColor? {
+    open func borderColor(for state: UIControl.State) -> UIColor? {
         return self.borderColorsForStates[state.rawValue]
     }
 }
