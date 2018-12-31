@@ -86,7 +86,7 @@ public class ICThemeInfo: NSObject {
     }
     
     //------------------- Localization Key ----------------------
-    private func canonicalRegionKey(key: String) -> String {
+    private func canonicalRegionKey(_ key: String) -> String {
         let regionCode = ICLocalization.shared.regionCode
         if regionCode.count <= 0 {
             return key
@@ -97,7 +97,7 @@ public class ICThemeInfo: NSObject {
         return regionKey.ic.stringByAppendingPathComponent(path: filename)
     }
     
-    private func canonicalLanguageKey(key: String) -> String {
+    private func canonicalLanguageKey(_ key: String) -> String {
         let languageCode = ICLocalization.shared.languageCodeShort
         if languageCode.count <= 0 {
             return key
@@ -109,65 +109,41 @@ public class ICThemeInfo: NSObject {
     }
     
     //--------------------------- Images ------------------------
-    public func image(forICResName key:String) -> UIImage? {
+    public func image(_ key:String, shouldCache:Bool = true, useTemplate:Bool = false) -> UIImage? {
         if key.count <= 0 {
             return nil
         }
         
         var image:UIImage?
-        if let presetDir = self.presetDir {
-            let path = "\(presetDir)/Images/\(key)"
-            image = UIImage(named: path)
+        if shouldCache {
+            if let presetDir = self.presetDir {
+                let path = "\(presetDir)/Images/\(key)"
+                image = UIImage(named: path)
+            } else {
+                let path = "\(self.baseDir)/Images/\(key)"
+                image = UIImage(contentsOfFile: path)
+            }
         } else {
-            image = self.image(forICResNameNoCache: key)
+            let path = "\(self.baseDir)/Images/\(key)"
+            image = UIImage(contentsOfFile: path)
         }
         
+        if useTemplate {
+            image = image?.withRenderingMode(.alwaysTemplate)
+        }
         return image
     }
     
-    public func image(forICResNameNoCache key:String) -> UIImage? {
-        if key.count <= 0 {
-            return nil
-        }
-        
-        let path = "\(self.baseDir)/Images/\(key)"
-        return UIImage(contentsOfFile: path)
+    public func regionImage(_ key:String, shouldCache:Bool = true, useTemplate:Bool = false) -> UIImage? {
+        return self.image(self.canonicalRegionKey(key), shouldCache:shouldCache, useTemplate:useTemplate)
     }
     
-    public func templateImage(forICResName key:String) -> UIImage? {
-        if key.count <= 0 {
-            return nil
-        }
-        
-        return self.image(forICResName: key)?.withRenderingMode(.alwaysTemplate)
-    }
-    
-    public func image(forICResNameRegion key:String) -> UIImage? {
-       return self.image(forICResName: self.canonicalRegionKey(key: key))
-    }
-    
-    public func image(forICResNameRegionNoCache key:String) -> UIImage? {
-        return self.image(forICResNameNoCache: self.canonicalRegionKey(key: key))
-    }
-    
-    public func templateImage(forICResNameRegion key:String) -> UIImage? {
-        return self.templateImage(forICResName: self.canonicalRegionKey(key: key))
-    }
-    
-    public func image(forICResNameLanguage key:String) -> UIImage? {
-        return self.image(forICResName: self.canonicalLanguageKey(key: key))
-    }
-    
-    public func image(forICResNameLanguageNoCache key:String) -> UIImage? {
-        return self.image(forICResNameNoCache: self.canonicalLanguageKey(key: key))
-    }
-    
-    public func templateImage(forICResNameLanguage key:String) -> UIImage? {
-        return self.templateImage(forICResName: self.canonicalLanguageKey(key: key))
+    public func languageImage(_ key:String, shouldCache:Bool = true, useTemplate:Bool = false) -> UIImage? {
+        return self.image(self.canonicalLanguageKey(key), shouldCache:shouldCache, useTemplate:useTemplate)
     }
     
     //------------------- Color ----------------------
-    public func color(forICResName key:String) -> UIColor? {
+    public func color(_ key:String) -> UIColor? {
         if key.count <= 0 {
             return nil
         }
@@ -193,7 +169,7 @@ public class ICThemeInfo: NSObject {
     }
     
     //------------------- Data ----------------------
-    public func data(forICResName key:String) -> Data? {
+    public func data(_ key:String) -> Data? {
         if key.count <= 0 {
             return nil
         }

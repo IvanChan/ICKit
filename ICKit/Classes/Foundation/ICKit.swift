@@ -27,6 +27,7 @@ public extension ICKitCompatible {
 
 extension String: ICKitCompatible {}
 extension UIScreen: ICKitCompatible {}
+extension UIView: ICKitCompatible {}
 extension UIViewController: ICKitCompatible {}
 
 

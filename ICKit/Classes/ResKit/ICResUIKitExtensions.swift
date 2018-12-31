@@ -8,214 +8,228 @@
 
 import UIKit
 
+enum ICResKey: String {
+    case association = "ic_association"
+    
+    case backgroundColor = "ic_background_color"
+    case borderColor = "ic_border_color"
+    case tintColor = "ic_tint_color"
+    
+    case title = "ic_title"
+    case titleColor = "ic_title_color"
+    
+    case image = "ic_image"
+    case backgroundImage = "ic_background_image"
+}
+
 extension UIView {
-
-    private static let ICBackgroundColorResKey = "ICBackgroundColorKey"
-
-    internal func ic_resHash() -> [String:Any] {
-        
-        let key: UnsafeRawPointer! = UnsafeRawPointer.init(bitPattern: "ICResHashAssociatedKey".hashValue)
-
-        var resHash:[String:Any]? = objc_getAssociatedObject(self, key) as? [String:Any]
-        if resHash == nil {
-            resHash = [:]
-            objc_setAssociatedObject(self, key, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            ICThemeManager.shared.addObserver(self)
-        }
-        return resHash!
-    }
-    
-    internal func updateHash(_ resHash:[String:Any]) {
-        let key: UnsafeRawPointer! = UnsafeRawPointer.init(bitPattern: "ICResHashAssociatedKey".hashValue)
-        objc_setAssociatedObject(self, key, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-    }
-    
-    open func ic_setResValue(_ value:Any, forKey:String) {
-        var resHash = self.ic_resHash()
-        resHash[forKey] = value
-        
-        self.updateHash(resHash)
-    }
-    
-    internal func ic_resValue(_ forKey:String) -> Any? {
-        return self.ic_resHash()[forKey]
-    }
-    
-    //-------------- background color -----------------
-    public func setBackgroundColor(forICResName key:String) {
-        self.ic_setResValue(key, forKey: UIView.ICBackgroundColorResKey)
-        self.backgroundColor = resGetColor(key)
-    }
-    
     @objc open func didThemeChanged() {
-        if let bgColorResKey:String = self.ic_resValue(UIView.ICBackgroundColorResKey) as? String {
-            self.backgroundColor = resGetColor(bgColorResKey)
+        if let bgColorResKey:String = self.ic.resValue(ICResKey.backgroundColor.rawValue) as? String {
+            self.backgroundColor = ICRes.color(bgColorResKey)
         }
     }
     
     @objc open func didLanguageChanged() {
         
     }
+    
+    @objc open func didRegionChanged() {
+//        self.didThemeChanged();
+//        self.didLanguageChanged();
+    }
+}
+
+extension ICKit where Base : UIView {
+
+    internal func resHash() -> [String:Any] {
+        
+        let key = ICResKey.association.rawValue
+
+        var resHash:[String:Any]? = objc_getAssociatedObject(self, key) as? [String:Any]
+        if resHash == nil {
+            resHash = [:]
+            objc_setAssociatedObject(self, key, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            
+            ICThemeManager.shared.addObserver(self.base)
+            ICResTextManager.shared.addObserver(self.base)
+        }
+        return resHash!
+    }
+    
+    internal func updateResHash(_ resHash:[String:Any]) {
+        objc_setAssociatedObject(self, ICResKey.association.rawValue, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    }
+    
+    internal func setResValue(_ value:Any, forKey:String) {
+        var resHash = self.resHash()
+        resHash[forKey] = value
+        
+        self.updateResHash(resHash)
+    }
+    
+    internal func resValue(_ forKey:String) -> Any? {
+        return self.resHash()[forKey]
+    }
+    
+    //-------------- background color -----------------
+    public func setBackgroundColor(key:String) {
+        self.setResValue(key, forKey: ICResKey.backgroundColor.rawValue)
+        self.base.backgroundColor = ICRes.color(key)
+    }
 }
 
 extension UIButton {
-    
-    private static let ICTitleHashKey = "ICTitleHashKey"
-    private static let ICTitleColorHashKey = "ICTitleColorHashKey"
-
-    private static let ICImageHashKey = "ICImageHashKey"
-    private static let ICBgImageHashKey = "ICBgImageHashKey"
-
-    open func ic_resStateHash(_ key: String) -> [UInt:String] {
-        var hash:[UInt:String]? = self.ic_resValue(key) as? [UInt:String]
-        if hash == nil {
-            hash = [:]
-            self.ic_setResValue(hash!, forKey: key)
-        }
-        return hash!
-    }
-    
-    open func ic_saveResKey(_ key:String, forHashKey: String) {
-        var hash = self.ic_resStateHash(forHashKey)
-        hash[state.rawValue] = key
-        
-        self.ic_setResValue(hash, forKey: forHashKey)
-    }
-    
-    //-------------- title -----------------
-    public func setTitle(forICResName key:String, state: UIControl.State) {
-        self.ic_saveResKey(key, forHashKey: UIButton.ICTitleHashKey)
-        self.setTitle(resGetText(key), for: state)
-    }
-
-    //-------------- title color -----------------
-    public func setTitleColor(forICResName key:String, state: UIControl.State) {
-        self.ic_saveResKey(key, forHashKey: UIButton.ICTitleColorHashKey)
-        self.setTitleColor(resGetColor(key), for: state)
-    }
-    
-    //-------------- image -----------------
-    public func setImage(forICResName key:String, state: UIControl.State) {
-        self.ic_saveResKey(key, forHashKey: UIButton.ICImageHashKey)
-        self.setImage(resGetImage(key), for: state)
-    }
-    
-    //-------------- background image -----------------
-    public func setBackgroundImage(forICResName key:String, state: UIControl.State) {
-        self.ic_saveResKey(key, forHashKey: UIButton.ICBgImageHashKey)
-        self.setBackgroundImage(resGetImage(key), for: state)
-    }
-    
     override open func didThemeChanged() {
         super.didThemeChanged()
         
-        for (key, value) in self.ic_resStateHash(UIButton.ICTitleColorHashKey) {
-            self.setTitleColor(resGetColor(value), for: UIControl.State(rawValue: key))
+        for (key, value) in self.ic.resStateHash(ICResKey.titleColor.rawValue) {
+            self.setTitleColor(ICRes.color(value), for: UIControl.State(rawValue: key))
         }
         
-        for (key, value) in self.ic_resStateHash(UIButton.ICImageHashKey) {
-            self.setImage(resGetImage(value), for: UIControl.State(rawValue: key))
+        for (key, value) in self.ic.resStateHash(ICResKey.image.rawValue) {
+            self.setImage(ICRes.image(value), for: UIControl.State(rawValue: key))
         }
         
-        for (key, value) in self.ic_resStateHash(UIButton.ICBgImageHashKey) {
-            self.setBackgroundImage(resGetImage(value), for: UIControl.State(rawValue: key))
+        for (key, value) in self.ic.resStateHash(ICResKey.backgroundImage.rawValue) {
+            self.setBackgroundImage(ICRes.image(value), for: UIControl.State(rawValue: key))
         }
     }
     
     override open func didLanguageChanged() {
         super.didLanguageChanged()
-
-        for (key, value) in self.ic_resStateHash(UIButton.ICTitleHashKey) {
-            self.setTitle(resGetText(value), for: UIControl.State(rawValue: key))
+        
+        for (key, value) in self.ic.resStateHash(ICResKey.title.rawValue) {
+            self.setTitle(ICRes.text(value), for: UIControl.State(rawValue: key))
         }
+    }
+}
+
+extension ICKit where Base : UIButton {
+
+    internal func resStateHash(_ key: String) -> [UInt:String] {
+        var hash:[UInt:String]? = self.resValue(key) as? [UInt:String]
+        if hash == nil {
+            hash = [:]
+            self.setResValue(hash!, forKey: key)
+        }
+        return hash!
+    }
+    
+    internal func saveResKey(_ key:String, forHashKey: String) {
+        var hash = self.resStateHash(forHashKey)
+        hash[base.state.rawValue] = key
+        
+        self.setResValue(hash, forKey: forHashKey)
+    }
+    
+    //-------------- title -----------------
+    public func setTitle(key:String, state: UIControl.State) {
+        self.saveResKey(key, forHashKey: ICResKey.title.rawValue)
+        self.base.setTitle(ICRes.text(key), for: state)
+    }
+
+    //-------------- title color -----------------
+    public func setTitleColor(key:String, state: UIControl.State) {
+        self.saveResKey(key, forHashKey: ICResKey.titleColor.rawValue)
+        self.base.setTitleColor(ICRes.color(key), for: state)
+    }
+    
+    //-------------- image -----------------
+    public func setImage(key:String, state: UIControl.State) {
+        self.saveResKey(key, forHashKey: ICResKey.image.rawValue)
+        self.base.setImage(ICRes.image(key), for: state)
+    }
+    
+    //-------------- background image -----------------
+    public func setBackgroundImage(key:String, state: UIControl.State) {
+        self.saveResKey(key, forHashKey: ICResKey.backgroundImage.rawValue)
+        self.base.setBackgroundImage(ICRes.image(key), for: state)
     }
 }
 
 extension UILabel {
     
-    private static let ICTextColorResKey = "ICTextColorResKey"
-    private static let ICTextResKey = "ICTextResKey"
-
-    //-------------- text color -----------------
-    public func setTextColor(forICResName key:String) {
-        self.ic_setResValue(key, forKey: UILabel.ICTextColorResKey)
-        self.textColor = resGetColor(key)
-    }
-
-    //-------------- text -----------------
-    public func setText(forICResName key:String) {
-        self.ic_setResValue(key, forKey: UILabel.ICTextResKey)
-        self.text = resGetText(key)
-        ICResTextManager.shared.addObserver(self)
-    }
-
     override open func didThemeChanged() {
         super.didThemeChanged()
         
-        if let textColorKey:String = self.ic_resValue(UILabel.ICTextColorResKey) as? String {
-            self.textColor = resGetColor(textColorKey)
+        if let textColorKey:String = self.ic.resValue(ICResKey.titleColor.rawValue) as? String {
+            self.textColor = ICRes.color(textColorKey)
         }
     }
     
     override open func didLanguageChanged() {
         super.didLanguageChanged()
         
-        if let key:String = self.ic_resValue(UILabel.ICTextResKey) as? String {
-            self.text = resGetText(key)
+        if let key:String = self.ic.resValue(ICResKey.title.rawValue) as? String {
+            self.text = ICRes.text(key)
         }
+    }
+}
+
+extension ICKit where Base : UILabel {
+
+    //-------------- text color -----------------
+    public func setTextColor(key:String) {
+        self.setResValue(key, forKey: ICResKey.titleColor.rawValue)
+        self.base.textColor = ICRes.color(key)
+    }
+
+    //-------------- text -----------------
+    public func setText(key:String) {
+        self.setResValue(key, forKey: ICResKey.title.rawValue)
+        self.base.text = ICRes.text(key)
     }
 }
 
 extension UITextField {
     
-    private static let ICTextColorResKey = "ICTextColorResKey"
-    private static let ICTextResKey = "ICTextResKey"
-    
-    //-------------- text color -----------------
-    public func setTextColor(forICResName key:String) {
-        self.ic_setResValue(key, forKey: UITextField.ICTextColorResKey)
-        self.textColor = resGetColor(key)
-    }
-    
-    //-------------- text -----------------
-    public func setText(forICResName key:String) {
-        self.ic_setResValue(key, forKey: UITextField.ICTextResKey)
-        self.text = resGetText(key)
-        
-        ICResTextManager.shared.addObserver(self)
-    }
-    
     override open func didThemeChanged() {
         super.didThemeChanged()
         
-        if let textColorKey:String = self.ic_resValue(UITextField.ICTextColorResKey) as? String {
-            self.textColor = resGetColor(textColorKey)
+        if let textColorKey:String = self.ic.resValue(ICResKey.titleColor.rawValue) as? String {
+            self.textColor = ICRes.color(textColorKey)
         }
     }
     
     override open func didLanguageChanged() {
         super.didLanguageChanged()
         
-        if let key:String = self.ic_resValue(UITextField.ICTextResKey) as? String {
-            self.text = resGetText(key)
+        if let key:String = self.ic.resValue(ICResKey.title.rawValue) as? String {
+            self.text = ICRes.text(key)
         }
     }
 }
 
-extension UIImageView {
-    private static let ICImageResKey = "ICImageResKey"
-
-    //-------------- text -----------------
-    public func setImage(forICResName key:String) {
-        self.ic_setResValue(key, forKey: UIImageView.ICImageResKey)
-        self.image = resGetImage(key)
+extension ICKit where Base : UITextField {
+    
+    //-------------- text color -----------------
+    public func setTextColor(key:String) {
+        self.setResValue(key, forKey: ICResKey.titleColor.rawValue)
+        self.base.textColor = ICRes.color(key)
     }
     
+    //-------------- text -----------------
+    public func setText(key:String) {
+        self.setResValue(key, forKey: ICResKey.title.rawValue)
+        self.base.text = ICRes.text(key)
+    }
+}
+
+extension UIImageView {
     override open func didThemeChanged() {
         super.didThemeChanged()
         
-        if let key:String = self.ic_resValue(UIImageView.ICImageResKey) as? String {
-            self.image = resGetImage(key)
+        if let key:String = self.ic.resValue(ICResKey.image.rawValue) as? String {
+            self.image = ICRes.image(key)
         }
+    }
+}
+
+extension ICKit where Base : UIImageView {
+
+    //-------------- text -----------------
+    public func setImage(key:String) {
+        self.setResValue(key, forKey: ICResKey.image.rawValue)
+        self.base.image = ICRes.image(key)
     }
 }

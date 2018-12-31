@@ -9,42 +9,40 @@ import UIKit
 
 extension ICColorButton {
     
-    private static let ICBackgroundColorHashKey = "ICBackgroundColorHashKey"
-    private static let ICBorderColorHashKey = "ICBorderColorHashKey"
-    private static let ICTintColorHashKey = "ICTintColorHashKey"
-    
-    
-    //-------------- Background color -----------------
-    public func setBackgroundColor(forICResName key:String, state: UIControl.State) {
-        self.ic_saveResKey(key, forHashKey: ICColorButton.ICBackgroundColorHashKey)
-        self.setBackgroundColor(resGetColor(key), for: state)
-    }
-    
-    //-------------- Border color -----------------
-    public func setBorderColor(forICResName key:String, state: UIControl.State) {
-        self.ic_saveResKey(key, forHashKey: ICColorButton.ICBorderColorHashKey)
-        self.setBorderColor(resGetColor(key), for: state)
-    }
-    
-    //-------------- Tint color -----------------
-    public func setTintColor(forICResName key:String, state: UIControl.State) {
-        self.ic_saveResKey(key, forHashKey: ICColorButton.ICTintColorHashKey)
-        self.setTintColor(resGetColor(key), for: state)
-    }
-    
     override open func didThemeChanged() {
         super.didThemeChanged()
         
-        for (key, value) in self.ic_resStateHash(ICColorButton.ICBackgroundColorHashKey) {
-            self.setBackgroundColor(resGetColor(value), for: UIControl.State(rawValue: key))
+        for (key, value) in self.ic.resStateHash(ICResKey.backgroundColor.rawValue) {
+            self.setBackgroundColor(ICRes.color(value), for: UIControl.State(rawValue: key))
         }
         
-        for (key, value) in self.ic_resStateHash(ICColorButton.ICBorderColorHashKey) {
-            self.setBorderColor(resGetColor(value), for: UIControl.State(rawValue: key))
+        for (key, value) in self.ic.resStateHash(ICResKey.borderColor.rawValue) {
+            self.setBorderColor(ICRes.color(value), for: UIControl.State(rawValue: key))
         }
         
-        for (key, value) in self.ic_resStateHash(ICColorButton.ICTintColorHashKey) {
-            self.setTintColor(resGetColor(value), for: UIControl.State(rawValue: key))
+        for (key, value) in self.ic.resStateHash(ICResKey.tintColor.rawValue) {
+            self.setTintColor(ICRes.color(value), for: UIControl.State(rawValue: key))
         }
+    }
+}
+
+extension ICKit where Base : ICColorButton {
+    
+    //-------------- Background color -----------------
+    public func setBackgroundColor(key:String, state: UIControl.State) {
+        self.saveResKey(key, forHashKey: ICResKey.backgroundColor.rawValue)
+        self.base.setBackgroundColor(ICRes.color(key), for: state)
+    }
+    
+    //-------------- Border color -----------------
+    public func setBorderColor(key:String, state: UIControl.State) {
+        self.saveResKey(key, forHashKey: ICResKey.borderColor.rawValue)
+        self.base.setBorderColor(ICRes.color(key), for: state)
+    }
+    
+    //-------------- Tint color -----------------
+    public func setTintColor(key:String, state: UIControl.State) {
+        self.saveResKey(key, forHashKey: ICResKey.tintColor.rawValue)
+        self.base.setTintColor(ICRes.color(key), for: state)
     }
 }

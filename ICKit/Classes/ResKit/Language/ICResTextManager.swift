@@ -70,11 +70,11 @@ public class ICResTextManager: ICObserverTable {
         return self.textXmlDoc != nil
     }
     
-    public func text(forICResName key:String) -> String? {
+    public func text(_ key:String) -> String? {
         if key.count <= 0 {
             return nil
         }
-        
+
         let xpath = "//Language/\(key)"
         
         var xmlNode:GDataXMLNode?
