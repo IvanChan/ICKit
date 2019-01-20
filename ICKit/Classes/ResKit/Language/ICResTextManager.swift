@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ICObserver
 import GDataXML_HTML
 
 @objc public protocol ICResTextManagerObserver {
@@ -15,7 +14,7 @@ import GDataXML_HTML
     func didLanguageChanged()
 }
 
-public class ICResTextManager: ICObserverTable {
+public class ICResTextManager: ICObserverTable<ICResTextManagerObserver> {
     public static let shared = ICResTextManager()
 
     private var textXmlDoc:GDataXMLDocument?
@@ -92,7 +91,7 @@ public class ICResTextManager: ICObserverTable {
     }
     
     private func notifyObserversLanguageWillChanged() {
-        self.enumerateObserverOnMainThread { (observer) in
+        self.enumerateObserverOnMain { (observer) in
             let ob:NSObject = observer as! NSObject
             if ob.responds(to: #selector(ICResTextManagerObserver.willLanguageChange)) {
                 ob.perform(#selector(ICResTextManagerObserver.willLanguageChange))
@@ -101,7 +100,7 @@ public class ICResTextManager: ICObserverTable {
     }
     
     private func notifyObserversLanguageDidChanged() {
-        self.enumerateObserverOnMainThreadAsync { (observer) in
+        self.enumerateObserverOnMainAsync { (observer) in
             let ob:NSObject = observer as! NSObject
             if ob.responds(to: #selector(ICResTextManagerObserver.didLanguageChanged)) {
                 ob.perform(#selector(ICResTextManagerObserver.didLanguageChanged))

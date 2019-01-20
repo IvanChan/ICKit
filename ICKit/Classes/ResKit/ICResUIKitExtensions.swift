@@ -1,9 +1,9 @@
 //
 //  ICResUIKitExtensions.swift
-//  Ico
+//  ICResKit
 //
 //  Created by _ivanC on 15/01/2018.
-//  Copyright © 2018 Ico. All rights reserved.
+//  Copyright © 2018 ICKit. All rights reserved.
 //
 
 import UIKit
@@ -14,41 +14,48 @@ enum ICResKey: String {
     case backgroundColor = "ic_background_color"
     case borderColor = "ic_border_color"
     case tintColor = "ic_tint_color"
-    
+
     case title = "ic_title"
     case titleColor = "ic_title_color"
-    
+
     case image = "ic_image"
     case backgroundImage = "ic_background_image"
+    
+    case textAttribute = "ic_text_attribute"
+
 }
 
-extension UIView {
+extension UIView: ICThemeManagerObserver, ICResTextManagerObserver {
+    
+    @objc open func willThemeChange() {
+        
+    }
+    
     @objc open func didThemeChanged() {
         if let bgColorResKey:String = self.ic.resValue(ICResKey.backgroundColor.rawValue) as? String {
             self.backgroundColor = ICRes.color(bgColorResKey)
         }
     }
     
-    @objc open func didLanguageChanged() {
+    @objc open func willLanguageChange() {
         
     }
     
-    @objc open func didRegionChanged() {
-//        self.didThemeChanged();
-//        self.didLanguageChanged();
+    @objc open func didLanguageChanged() {
+        
     }
 }
+
+var ICResUIKitAssocaitionKey:Void?
 
 extension ICKit where Base : UIView {
 
     internal func resHash() -> [String:Any] {
         
-        let key = ICResKey.association.rawValue
-
-        var resHash:[String:Any]? = objc_getAssociatedObject(self, key) as? [String:Any]
+        var resHash:[String:Any]? = objc_getAssociatedObject(self.base, &ICResUIKitAssocaitionKey) as? [String:Any]
         if resHash == nil {
             resHash = [:]
-            objc_setAssociatedObject(self, key, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self.base, &ICResUIKitAssocaitionKey, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             
             ICThemeManager.shared.addObserver(self.base)
             ICResTextManager.shared.addObserver(self.base)
@@ -56,15 +63,16 @@ extension ICKit where Base : UIView {
         return resHash!
     }
     
-    internal func updateResHash(_ resHash:[String:Any]) {
-        objc_setAssociatedObject(self, ICResKey.association.rawValue, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    internal func updateHash(_ resHash:[String:Any]) {
+
+        objc_setAssociatedObject(self.base, &ICResUIKitAssocaitionKey, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
     internal func setResValue(_ value:Any, forKey:String) {
         var resHash = self.resHash()
         resHash[forKey] = value
         
-        self.updateResHash(resHash)
+        self.updateHash(resHash)
     }
     
     internal func resValue(_ forKey:String) -> Any? {
@@ -105,7 +113,7 @@ extension UIButton {
 }
 
 extension ICKit where Base : UIButton {
-
+    
     internal func resStateHash(_ key: String) -> [UInt:String] {
         var hash:[UInt:String]? = self.resValue(key) as? [UInt:String]
         if hash == nil {
@@ -115,40 +123,39 @@ extension ICKit where Base : UIButton {
         return hash!
     }
     
-    internal func saveResKey(_ key:String, forHashKey: String) {
+    internal func saveResKey(_ key:String, forHashKey: String, forState:UIControl.State) {
         var hash = self.resStateHash(forHashKey)
-        hash[base.state.rawValue] = key
+        hash[forState.rawValue] = key
         
         self.setResValue(hash, forKey: forHashKey)
     }
     
     //-------------- title -----------------
     public func setTitle(key:String, state: UIControl.State) {
-        self.saveResKey(key, forHashKey: ICResKey.title.rawValue)
+        self.saveResKey(key, forHashKey: ICResKey.title.rawValue, forState:state)
         self.base.setTitle(ICRes.text(key), for: state)
     }
 
     //-------------- title color -----------------
     public func setTitleColor(key:String, state: UIControl.State) {
-        self.saveResKey(key, forHashKey: ICResKey.titleColor.rawValue)
+        self.saveResKey(key, forHashKey: ICResKey.titleColor.rawValue, forState:state)
         self.base.setTitleColor(ICRes.color(key), for: state)
     }
     
     //-------------- image -----------------
     public func setImage(key:String, state: UIControl.State) {
-        self.saveResKey(key, forHashKey: ICResKey.image.rawValue)
+        self.saveResKey(key, forHashKey: ICResKey.image.rawValue, forState:state)
         self.base.setImage(ICRes.image(key), for: state)
     }
     
     //-------------- background image -----------------
     public func setBackgroundImage(key:String, state: UIControl.State) {
-        self.saveResKey(key, forHashKey: ICResKey.backgroundImage.rawValue)
+        self.saveResKey(key, forHashKey: ICResKey.backgroundImage.rawValue, forState:state)
         self.base.setBackgroundImage(ICRes.image(key), for: state)
     }
 }
 
 extension UILabel {
-    
     override open func didThemeChanged() {
         super.didThemeChanged()
         
@@ -178,11 +185,11 @@ extension ICKit where Base : UILabel {
     public func setText(key:String) {
         self.setResValue(key, forKey: ICResKey.title.rawValue)
         self.base.text = ICRes.text(key)
+        ICResTextManager.shared.addObserver(self.base)
     }
 }
 
 extension UITextField {
-    
     override open func didThemeChanged() {
         super.didThemeChanged()
         
@@ -212,6 +219,8 @@ extension ICKit where Base : UITextField {
     public func setText(key:String) {
         self.setResValue(key, forKey: ICResKey.title.rawValue)
         self.base.text = ICRes.text(key)
+        
+        ICResTextManager.shared.addObserver(self.base)
     }
 }
 

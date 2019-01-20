@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ICObserver
 
 public enum ICPresetTheme: String {
     case day = "Day"
@@ -19,7 +18,7 @@ public enum ICPresetTheme: String {
     func didThemeChanged()
 }
 
-public class ICThemeManager: ICObserverTable {
+public class ICThemeManager: ICObserverTable<ICThemeManagerObserver> {
     public static let shared = ICThemeManager()
     
     private(set) lazy var baseTheme:ICThemeInfo = {
@@ -81,7 +80,7 @@ public class ICThemeManager: ICObserverTable {
     }
     
     private func notifyObserversThemeWillChanged() {
-        self.enumerateObserverOnMainThread { (observer) in
+        self.enumerateObserverOnMain { (observer) in
             let ob:NSObject = observer as! NSObject
             if ob.responds(to: #selector(ICThemeManagerObserver.willThemeChange)) {
                 ob.perform(#selector(ICThemeManagerObserver.willThemeChange))
@@ -90,7 +89,7 @@ public class ICThemeManager: ICObserverTable {
     }
     
     private func notifyObserversThemeDidChanged() {
-        self.enumerateObserverOnMainThreadAsync { (observer) in
+        self.enumerateObserverOnMainAsync { (observer) in
             let ob:NSObject = observer as! NSObject
             if ob.responds(to: #selector(ICThemeManagerObserver.didThemeChanged)) {
                 ob.perform(#selector(ICThemeManagerObserver.didThemeChanged))

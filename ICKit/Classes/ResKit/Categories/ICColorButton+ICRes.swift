@@ -30,19 +30,19 @@ extension ICKit where Base : ICColorButton {
     
     //-------------- Background color -----------------
     public func setBackgroundColor(key:String, state: UIControl.State) {
-        self.saveResKey(key, forHashKey: ICResKey.backgroundColor.rawValue)
+        self.saveResKey(key, forHashKey: ICResKey.backgroundColor.rawValue, forState: state)
         self.base.setBackgroundColor(ICRes.color(key), for: state)
     }
     
     //-------------- Border color -----------------
     public func setBorderColor(key:String, state: UIControl.State) {
-        self.saveResKey(key, forHashKey: ICResKey.borderColor.rawValue)
+        self.saveResKey(key, forHashKey: ICResKey.borderColor.rawValue, forState: state)
         self.base.setBorderColor(ICRes.color(key), for: state)
     }
     
     //-------------- Tint color -----------------
     public func setTintColor(key:String, state: UIControl.State) {
-        self.saveResKey(key, forHashKey: ICResKey.tintColor.rawValue)
+        self.saveResKey(key, forHashKey: ICResKey.tintColor.rawValue, forState: state)
         self.base.setTintColor(ICRes.color(key), for: state)
     }
 }

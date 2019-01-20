@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ICKit'
-  s.version          = '1.0.0'
+  s.version          = '1.1.0'
   s.summary          = 'A common useful dev pack.'
 
 # This description is used to generate tags and improve search results.
@@ -54,7 +54,14 @@ TODO: Add long description of the pod here.
     res.dependency 'ICKit/UIKitEx'
 
     res.dependency 'GDataXML-HTML'
-    res.dependency 'ICObserver'
+    # res.dependency 'ICObserver'
+  end
+
+  s.subspec 'TextureEx' do |res|
+    res.source_files = 'ICKit/Classes/TextureEx/**/*'
+
+    res.dependency 'ICKit/ResKit'
+    res.dependency 'Texture'
   end
 
   # s.resource_bundles = {

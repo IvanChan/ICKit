@@ -3,7 +3,7 @@
 //  Ico
 //
 //  Created by _ivanC on 12/01/2018.
-//  Copyright © 2018 Ico. All rights reserved.
+//  Copyright © 2018 ICKit. All rights reserved.
 //
 
 import UIKit
@@ -13,12 +13,17 @@ struct ICRes {
         return ICResTextManager.shared.text(key)
     }
     
-    public static func color(_ key: String) -> UIColor? {
+    public static func color(_ key: String) -> UIColor {
         var result:UIColor? = ICThemeManager.shared.currentTheme?.color(key)
         if result == nil {
             result = ICThemeManager.shared.baseTheme.color(key)
         }
-        return result
+        
+        if result == nil {
+            result = .clear
+        }
+
+        return result!
     }
     
     public static func image(_ key: String, shouldCache:Bool = true, useTemplate:Bool = false) -> UIImage? {

@@ -4,5 +4,5 @@ target 'ICKit_Example' do
   pod 'ICKit/Foundation', :path => '../'
   pod 'ICKit/UIKitEx', :path => '../'
   pod 'ICKit/ResKit', :path => '../'
-
+  pod 'ICKit/TextureEx', :path => '../'
 end
