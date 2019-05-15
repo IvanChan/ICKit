@@ -1,5 +1,5 @@
 //
-//  SCNestedScrollContext.swift
+//  ICNestedScrollContext.swift
 //  ICKit
 //
 //  Created by _ivanc on 2019/2/16.
@@ -9,15 +9,15 @@
 import UIKit
 import AsyncDisplayKit
 
-protocol SCNestedScrollContextDataSource:NSObjectProtocol {
+protocol ICNestedScrollContextDataSource:NSObjectProtocol {
     func mainScrollView() -> UIScrollView
     func embeddedScrollView() -> UIScrollView
     func triggerOffset() -> CGPoint
 }
 
-class SCNestedScrollContext: NSObject, UIScrollViewDelegate {
+class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
     
-    private var dataSource:SCNestedScrollContextDataSource
+    private var dataSource:ICNestedScrollContextDataSource
     
     private var mainScrollView:UIScrollView {
         return self.dataSource.mainScrollView()
@@ -36,7 +36,7 @@ class SCNestedScrollContext: NSObject, UIScrollViewDelegate {
 
     public var deceleratingFactor:CGFloat = 120
     
-    init(dataSource:SCNestedScrollContextDataSource) {
+    init(dataSource:ICNestedScrollContextDataSource) {
         self.dataSource = dataSource
         super.init()
     }
