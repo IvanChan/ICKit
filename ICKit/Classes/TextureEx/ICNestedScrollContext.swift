@@ -17,18 +17,18 @@ protocol ICNestedScrollContextDataSource:NSObjectProtocol {
 
 class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
     
-    private var dataSource:ICNestedScrollContextDataSource
+    weak var dataSource:ICNestedScrollContextDataSource?
     
-    private var mainScrollView:UIScrollView {
-        return self.dataSource.mainScrollView()
+    private var mainScrollView:UIScrollView? {
+        return self.dataSource?.mainScrollView()
     }
     
-    private var embeddedScrollView:UIScrollView {
-        return self.dataSource.embeddedScrollView()
+    private var embeddedScrollView:UIScrollView? {
+        return self.dataSource?.embeddedScrollView()
     }
     
     private var triggerOffset:CGPoint {
-        return self.dataSource.triggerOffset()
+        return self.dataSource?.triggerOffset() ?? .zero
     }
 
     private(set) var isMainScrollViewDragging:Bool = false
