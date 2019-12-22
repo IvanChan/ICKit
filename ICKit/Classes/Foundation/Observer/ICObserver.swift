@@ -9,144 +9,116 @@
 import UIKit
 
 public class ICObserverTable<T>: NSObject {
-    lazy private var observerList:NSHashTable = {
-        return NSHashTable<AnyObject>(options: [.weakMemory, .objectPointerPersonality], capacity: 2)
-    }()
     
-    lazy private var addObserverList:NSHashTable = {
-        return NSHashTable<AnyObject>(options: [.weakMemory, .objectPointerPersonality], capacity: 2)
-    }()
+    lazy private var queue:DispatchQueue = DispatchQueue(label: "com.santac.observers")
     
-    lazy private var removeObserverList:NSHashTable = {
-        return NSHashTable<AnyObject>(options: [.weakMemory, .objectPointerPersonality], capacity: 2)
-    }()
-    
-    lazy private var lock:NSRecursiveLock = NSRecursiveLock()
-    
-    lazy private var isEnumerating:Bool = false
-    
-    public func observerCount() -> Int {
-        
-        var count:Int = 0
-        self.lock.lock()
-        count = self.observerList.count
-        self.lock.unlock()
-        return count
+    private var observerList:NSHashTable<AnyObject>
+    public init(options:NSPointerFunctions.Options = [.weakMemory, .objectPointerPersonality]) {
+        observerList = NSHashTable<AnyObject>(options: options, capacity: 2)
+        super.init()
     }
     
-    public func addObserver(_ observer:T) {
-        self.lock.lock()
-        
-        if self.isEnumerating {
-            self.addObserverList.add(observer as AnyObject)
-        } else {
+    public func add(_ observer:T) {
+        self.queue.async {
             self.observerList.add(observer as AnyObject)
         }
-        
-        self.lock.unlock()
     }
     
-    public func removeObserver(_ observer:T) {
-        self.lock.lock()
+    public func remove(_ observer:T) {
+//        let target = observer as AnyObject
+//        self.queue.async { [weak target] in
+//            if let toRemove = target {
+//                self.observerList.remove(toRemove)
+//            }
+//        }
+    }
+    
+    public func enumerateObserver(on performQueue:DispatchQueue?, isSync:Bool = true, _ block:@escaping ((T) -> Void)) {
         
-        if self.isEnumerating {
-            self.removeObserverList.add(observer as AnyObject)
-        } else {
-            self.observerList.remove(observer as AnyObject)
+        var copyList:NSHashTable<AnyObject>? = nil
+        self.queue.sync {
+            copyList = self.observerList.copy() as? NSHashTable<AnyObject>
         }
         
-        self.lock.unlock()
-    }
-    
-    public func enumerateObserver(_ block:((T) -> Void)) {
-        self.lock.lock()
-        self.isEnumerating = true
-        
-        for target in self.observerList.allObjects {
-            block(target as! T)
-        }
-        
-        // merging data
-        self.observerList.union(self.addObserverList)
-        self.observerList.minus(self.removeObserverList)
-        
-        self.addObserverList.removeAllObjects()
-        self.removeObserverList.removeAllObjects()
-        
-        self.lock.unlock()
-    }
-    
-    public func enumerateObserverOnMain(_ block:(T) -> Void) {
-        if Thread.isMainThread {
-            self.enumerateObserver(block)
-        } else {
-            DispatchQueue.main.sync {
-                self.enumerateObserver(block)
+        if let list = copyList {
+            for target in list.allObjects {
+                if let performQueue = performQueue {
+                    if isSync {
+                        if let currentQueue = OperationQueue.current?.underlyingQueue, currentQueue == performQueue {
+                            block(target as! T)
+                        } else {
+                            performQueue.sync {
+                                block(target as! T)
+                            }
+                        }
+                    } else {
+                        performQueue.async {
+                            block(target as! T)
+                        }
+                    }
+                } else {
+                    block(target as! T)
+                }
             }
         }
     }
     
-    public func enumerateObserverOnMainAsync(_ block:@escaping ((T) -> Void)) {
-        DispatchQueue.main.async {
-            self.enumerateObserver(block)
+    public func enumerateObserverOnMain(_ block:@escaping (T) -> Void) {
+        if Thread.isMainThread {
+            self.enumerateObserver(on: nil, block)
+        } else {
+            self.enumerateObserver(on: DispatchQueue.main, block)
         }
+    }
+    
+    public func enumerateObserverOnMainAsync(_ block:@escaping ((T) -> Void)) {
+        self.enumerateObserver(on: DispatchQueue.main, isSync:false, block)
     }
 }
 
 public class ICKeyObserverTable<T>: NSObject {
     lazy private var observerHash:[String:ICObserverTable<T>] = [:]
     
-    lazy private var lock:NSRecursiveLock = NSRecursiveLock()
+    lazy private var queue:DispatchQueue = DispatchQueue(label: "com.santac.keyObservers")
 
     public func addObserver(_ observer:T, for key:String) {
-        self.lock.lock()
-        
-        var table = self.observerHash[key]
-        if table == nil {
-            table = ICObserverTable()
-            self.observerHash[key] = table
+        self.queue.async {
+            var table = self.observerHash[key]
+            if table == nil {
+                table = ICObserverTable()
+                self.observerHash[key] = table
+            }
+            table?.add(observer)
         }
-        table?.addObserver(observer)
-        
-        self.lock.unlock()
     }
     
     public func removeObserver(_ observer:T, for key:String) {
-        self.lock.lock()
-        
-        if let table = self.observerHash[key] {
-            table.removeObserver(observer)
-            if table.observerCount() <= 0 {
-                self.observerHash.removeValue(forKey: key)
-            }
-        }
-        
-        self.lock.unlock()
+//        let target = observer as AnyObject
+//        self.queue.async { [weak target] in
+//            if let toRemove = target {
+//                if let table = self.observerHash[key] {
+//                    table.remove(toRemove as! T)
+//                }
+//            }
+//        }
     }
     
-    public func enumerateObserver(for key:String, _ block:((T) -> Void)) {
-        self.lock.lock()
-        
-        if let table = self.observerHash[key] {
-            table.enumerateObserver(block)
+    public func enumerateObserver(for key:String, on performQueue:DispatchQueue?, isSync:Bool = true, _ block:@escaping ((T) -> Void)) {
+        var tempTable:ICObserverTable<T>?
+        self.queue.sync {
+            tempTable = self.observerHash[key]
         }
-    
-        self.lock.unlock()
-    }
-    
-    public func enumerateObserverOnMain(for key:String, _ block:(T) -> Void) {
-        if Thread.isMainThread {
-            self.enumerateObserver(for:key, block)
-        } else {
-            DispatchQueue.main.sync {
-                self.enumerateObserver(for:key, block)
-            }
+        
+        if let table = tempTable {
+            table.enumerateObserver(on:performQueue, isSync:isSync, block)
         }
     }
     
-    public func enumerateObserverOnMainAsync(for key:String, _ block:@escaping ((T) -> Void), sync:Bool = false) {
-        DispatchQueue.main.async {
-            self.enumerateObserver(for:key, block)
-        }
+    public func enumerateObserverOnMain(for key:String, _ block:@escaping (T) -> Void) {
+        self.enumerateObserver(for: key, on:DispatchQueue.main, block)
+    }
+    
+    public func enumerateObserverOnMainAsync(for key:String, _ block:@escaping ((T) -> Void)) {
+        self.enumerateObserver(for: key, on:DispatchQueue.main, isSync:false, block)
     }
 }

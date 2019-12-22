@@ -19,8 +19,8 @@ class ICTextNode: ASTextNode {
     }
     
     lazy var textFont:UIFont = UIFont.systemFont(ofSize: 17)
-    lazy var textColor:UIColor = SCColor(.black)
-    lazy var linkColor:UIColor = SCColor(.lightBlue)
+    lazy var textColor:UIColor = .black
+    lazy var linkColor:UIColor = .blue
 
     var analyseType:AnalyseType = [.link]
     

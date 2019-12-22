@@ -227,7 +227,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-ICKit_Example/Pods-ICKit_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-ICKit_Example/Pods-ICKit_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GDataXML-HTML/GDataXML_HTML.framework",
 				"${BUILT_PRODUCTS_DIR}/ICKit/ICKit.framework",
 				"${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework",
@@ -246,7 +246,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ICKit_Example/Pods-ICKit_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ICKit_Example/Pods-ICKit_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

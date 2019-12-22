@@ -42,8 +42,8 @@ extension ICKit where Base : ASDisplayNode {
             resHash = [:]
             objc_setAssociatedObject(self.base, &ICResTextureAssocaitionKey, resHash, .OBJC_ASSOCIATION_RETAIN)
             
-            ICThemeManager.shared.addObserver(self.base)
-            ICResTextManager.shared.addObserver(self.base)
+            ICThemeManager.shared.add(self.base)
+            ICResTextManager.shared.add(self.base)
         }
         return resHash!
     }
@@ -336,7 +336,7 @@ extension ICKit where Base : ASTextNode {
     public func setText(key:String) {
         self.setResValue(key, forKey: ICResKey.title.rawValue)
         self.setText(ICRes.text(key))
-        ICResTextManager.shared.addObserver(self.base)
+        ICResTextManager.shared.add(self.base)
     }
 }
 

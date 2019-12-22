@@ -57,8 +57,8 @@ extension ICKit where Base : UIView {
             resHash = [:]
             objc_setAssociatedObject(self.base, &ICResUIKitAssocaitionKey, resHash, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             
-            ICThemeManager.shared.addObserver(self.base)
-            ICResTextManager.shared.addObserver(self.base)
+            ICThemeManager.shared.add(self.base)
+            ICResTextManager.shared.add(self.base)
         }
         return resHash!
     }
@@ -185,7 +185,7 @@ extension ICKit where Base : UILabel {
     public func setText(key:String) {
         self.setResValue(key, forKey: ICResKey.title.rawValue)
         self.base.text = ICRes.text(key)
-        ICResTextManager.shared.addObserver(self.base)
+        ICResTextManager.shared.add(self.base)
     }
 }
 
@@ -220,7 +220,7 @@ extension ICKit where Base : UITextField {
         self.setResValue(key, forKey: ICResKey.title.rawValue)
         self.base.text = ICRes.text(key)
         
-        ICResTextManager.shared.addObserver(self.base)
+        ICResTextManager.shared.add(self.base)
     }
 }
 

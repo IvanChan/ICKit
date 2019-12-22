@@ -23,7 +23,7 @@ public class ICResTextManager: ICObserverTable<ICResTextManagerObserver> {
         return ICResEnvironmentConfigurator.shared.languageMainPath
     }()
     
-    override init() {
+    init() {
         super.init()
         
         self.reloadAllText()

@@ -57,7 +57,9 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
             }
             
             let triggerOffset = self.triggerOffset
-            let embeddedScrollView = self.embeddedScrollView
+            guard let embeddedScrollView = self.embeddedScrollView else {
+                return
+            }
             
             let scrollStep = scrollView.contentOffset.y - triggerOffset.y
             if scrollStep > 0 {
@@ -91,7 +93,9 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
             }
             
             let triggerOffset = self.triggerOffset
-            let mainScrollView = self.mainScrollView
+            guard let mainScrollView = self.mainScrollView else {
+                return
+            }
 
             let mainCurrentY = mainScrollView.contentOffset.y
             let isScrollToListArea = mainCurrentY >= triggerOffset.y
@@ -115,7 +119,7 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
         if scrollView == mainScrollView {
             isMainScrollViewDragging = false
             
-            let embeddedScrollView = self.embeddedScrollView
+            guard let embeddedScrollView = self.embeddedScrollView else {return}
 
             let maxOffsetY = max(0, embeddedScrollView.contentSize.height - embeddedScrollView.bounds.height)
             if embeddedScrollView.contentOffset.y > maxOffsetY {
@@ -153,7 +157,7 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
         } else if scrollView == embeddedScrollView {
             isEmbeddedScrollViewDragging = false
             
-            let mainScrollView = self.mainScrollView
+            guard let mainScrollView = self.mainScrollView else {return}
             let triggerOffset = self.triggerOffset
 
             if mainScrollView.contentOffset.y > 0 {
