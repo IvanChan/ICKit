@@ -1,6 +1,6 @@
 //
-//  ICResKit.swift
-//  Ico
+//  ICObserver.swift
+//  ICKit
 //
 //  Created by _ivanC on 12/01/2018.
 //  Copyright © 2018 Ico. All rights reserved.
@@ -10,7 +10,7 @@ import UIKit
 
 public class ICObserverTable<T>: NSObject {
     
-    lazy private var queue:DispatchQueue = DispatchQueue(label: "com.santac.observers")
+    lazy private var queue:DispatchQueue = DispatchQueue(label: "com.ic.observers")
     
     private var observerList:NSHashTable<AnyObject>
     public init(options:NSPointerFunctions.Options = [.weakMemory, .objectPointerPersonality]) {

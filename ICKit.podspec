@@ -29,7 +29,7 @@ TODO: Add long description of the pod here.
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
   s.swift_version = '4.2'
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '10.0'
 
   s.default_subspec = 'Foundation'
 
@@ -63,6 +63,13 @@ TODO: Add long description of the pod here.
     res.dependency 'ICKit/ResKit'
     res.dependency 'Texture'
   end
+  
+  s.subspec 'WcdbEx' do |res|
+     res.source_files = 'ICKit/Classes/WcdbEx/**/*'
+
+     res.dependency 'ICKit/Foundation'
+     res.dependency 'WCDB.swift'
+   end
 
   # s.resource_bundles = {
   #   'ICKit' => ['ICKit/Assets/*.png']

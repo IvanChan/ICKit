@@ -5,4 +5,6 @@ target 'ICKit_Example' do
   pod 'ICKit/UIKitEx', :path => '../'
   pod 'ICKit/ResKit', :path => '../'
   pod 'ICKit/TextureEx', :path => '../'
+  pod 'ICKit/WcdbEx', :path => '../'
+
 end
