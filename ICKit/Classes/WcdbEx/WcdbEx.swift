@@ -15,7 +15,7 @@ struct ICDatabaseTable<Root: TableDecodable> {
         case content
         case user
         
-        func database()throws ->Database{
+        func database() throws -> Database {
             switch self {
             case .cache: return try ICDatabase.cacheDatabase()
             case .content: return try ICDatabase.contentDatabase()
