@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ICPathUtil: NSObject {
+public class ICPathUtil: NSObject {
     
     open class func createDirectoryIfNeeded(_ dir: String) {
         if !FileManager.default.fileExists(atPath: dir) {

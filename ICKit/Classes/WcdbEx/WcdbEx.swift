@@ -9,7 +9,7 @@
 import Foundation
 import WCDBSwift
 
-struct ICDatabaseTable<Root: TableDecodable> {
+public struct ICDatabaseTable<Root: TableDecodable> {
     enum TableType {
         case cache
         case content
@@ -115,7 +115,7 @@ struct ICDatabaseTable<Root: TableDecodable> {
     }
 }
 
-class ICDatabase {
+public class ICDatabase {
     
     /// Clear as you like
     public static let cache:ICDatabase = ICDatabase()
@@ -235,7 +235,7 @@ extension ICDatabase {
     }
 }
 
-class DatabaseManager: NSObject {
+public class DatabaseManager: NSObject {
 
     @discardableResult class public func loadUserDatabase(_ username:String) -> Bool {
         guard username.count > 0 else {
