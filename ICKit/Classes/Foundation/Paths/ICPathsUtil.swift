@@ -16,16 +16,20 @@ public class ICPathUtil: NSObject {
         }
     }
     
-    private class func buildSubDir(from root:String, with sub:String) -> String {
+    private class func buildSubDir(from root:String, with sub:String, createIfNeeded:Bool = true) -> String {
         let result = root.ic.stringByAppendingPathComponent(path: sub)
-        createDirectoryIfNeeded(result)
+        if createIfNeeded {
+            createDirectoryIfNeeded(result)
+        }
         return result
     }
     
-    private class func buildSubPath(from root:String, with sub:String) -> String {
+    private class func buildSubPath(from root:String, with sub:String, createIfNeeded:Bool = true) -> String {
         let result = root.ic.stringByAppendingPathComponent(path: sub)
         let dir = result.ic.stringByDeletingLastPathComponent
-        createDirectoryIfNeeded(dir)
+        if createIfNeeded {
+            createDirectoryIfNeeded(dir)
+        }
         return result
     }
     
@@ -42,12 +46,12 @@ public class ICPathUtil: NSObject {
         }
     }()
     
-    open class func librarySubDir(with subDir: String) -> String {
-        return buildSubDir(from: libraryDir, with: subDir)
+    open class func librarySubDir(with subDir: String, createIfNeeded:Bool = true) -> String {
+        return buildSubDir(from: libraryDir, with: subDir, createIfNeeded:createIfNeeded)
     }
     
-    open class func libraryPath(with subPath: String) -> String {
-        return buildSubPath(from: libraryDir, with: subPath)
+    open class func libraryPath(with subPath: String, createIfNeeded:Bool = true) -> String {
+        return buildSubPath(from: libraryDir, with: subPath, createIfNeeded:createIfNeeded)
     }
     
     //MARK: - Documents
@@ -63,12 +67,12 @@ public class ICPathUtil: NSObject {
         }
     }()
     
-    open class func documentSubDir(with subDir: String) -> String {
-        return buildSubDir(from: documentDir, with: subDir)
+    open class func documentSubDir(with subDir: String, createIfNeeded:Bool = true) -> String {
+        return buildSubDir(from: documentDir, with: subDir, createIfNeeded:createIfNeeded)
     }
     
-    open class func documentPath(with subPath: String) -> String {
-        return buildSubPath(from: documentDir, with: subPath)
+    open class func documentPath(with subPath: String, createIfNeeded:Bool = true) -> String {
+        return buildSubPath(from: documentDir, with: subPath, createIfNeeded:createIfNeeded)
     }
     
     //MARK: - Tmp
@@ -78,11 +82,11 @@ public class ICPathUtil: NSObject {
         return path
     }()
     
-    open class func tmpSubDir(with subDir: String) -> String {
-        return buildSubDir(from: tmpDir, with: subDir)
+    open class func tmpSubDir(with subDir: String, createIfNeeded:Bool = true) -> String {
+        return buildSubDir(from: tmpDir, with: subDir, createIfNeeded:createIfNeeded)
     }
     
-    open class func tmpPath(with subPath: String) -> String {
-        return buildSubPath(from: tmpDir, with: subPath)
+    open class func tmpPath(with subPath: String, createIfNeeded:Bool = true) -> String {
+        return buildSubPath(from: tmpDir, with: subPath, createIfNeeded:createIfNeeded)
     }
 }
