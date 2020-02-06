@@ -10,9 +10,10 @@ import UIKit
 
 extension ICKit where Base == UIScreen {
     
+    @available(iOSApplicationExtension, unavailable)
     public func safeArea() -> UIEdgeInsets {
            var insets = UIEdgeInsets.zero
-           
+        
            DispatchQueue.mainSync {
                if let appDelegate = UIApplication.shared.delegate {
                    if let appWindow = appDelegate.window as? UIWindow {
