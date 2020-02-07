@@ -288,11 +288,11 @@ extension ICCollectionViewController {
 
 //MARK: - DataItem
 extension ICCollectionViewController {
-    func dataItem(at indexPath:IndexPath) -> T {
+    public func dataItem(at indexPath:IndexPath) -> T {
         return self.sectionItems[indexPath.section][indexPath.row]
     }
     
-    func appendDataItem(_ item:T) {
+    public func appendDataItem(_ item:T) {
         if var last = sectionItems.last {
             last.append(item)
             sectionItems[sectionItems.count-1] = last
@@ -301,7 +301,7 @@ extension ICCollectionViewController {
         }
     }
     
-    func insertDataItem(_ item:T, at indexPath:IndexPath) {
+    public func insertDataItem(_ item:T, at indexPath:IndexPath) {
         if sectionItems.count <= 0 {
             appendDataItem(item)
             return
@@ -317,7 +317,7 @@ extension ICCollectionViewController {
         sectionItems[indexPath.section] = rowItems
     }
     
-    func replaceDataItem(_ item:T, at indexPath:IndexPath) {
+    public func replaceDataItem(_ item:T, at indexPath:IndexPath) {
         
         guard indexPath.section >= 0 && indexPath.section < sectionItems.count else {return}
         
@@ -329,7 +329,7 @@ extension ICCollectionViewController {
         sectionItems[indexPath.section] = rowItems
     }
     
-    func removeDataItem(at indexPath:IndexPath) {
+    public func removeDataItem(at indexPath:IndexPath) {
         guard indexPath.section >= 0 && indexPath.section < sectionItems.count else {return}
         
         var rowItems = sectionItems[indexPath.section]
@@ -340,7 +340,7 @@ extension ICCollectionViewController {
         sectionItems[indexPath.section] = rowItems
     }
     
-    func removeAllDataItems(at section:Int, where shouldBeRemoved: (T) throws -> Bool) {
+    public func removeAllDataItems(at section:Int, where shouldBeRemoved: (T) throws -> Bool) {
         guard section >= 0 && section < sectionItems.count else {return}
 
         var rowItems = sectionItems[section]
@@ -348,11 +348,11 @@ extension ICCollectionViewController {
         sectionItems[section] = rowItems
     }
 
-    func dataItemCount() -> Int {
+    public func dataItemCount() -> Int {
         return sectionItems.flatMap({$0}).count
     }
     
-    func firstDataItem(where condition: ((T) -> Bool)? = nil) -> T? {
+    public func firstDataItem(where condition: ((T) -> Bool)? = nil) -> T? {
         for i in 0..<sectionItems.count {
             let rows = sectionItems[i]
             
@@ -369,7 +369,7 @@ extension ICCollectionViewController {
         return nil
     }
     
-    func indexPathOfDataItem(where condition: (T) -> Bool) -> IndexPath? {
+    public func indexPathOfDataItem(where condition: (T) -> Bool) -> IndexPath? {
         for i in 0..<sectionItems.count {
             let rows = sectionItems[i]
             for j in 0..<rows.count {
@@ -381,7 +381,7 @@ extension ICCollectionViewController {
         return nil
     }
     
-    func lastDataItem(where condition: ((T) -> Bool)? = nil) -> T? {
+    public func lastDataItem(where condition: ((T) -> Bool)? = nil) -> T? {
         
         for i in (0..<sectionItems.count).reversed() {
             let rows = sectionItems[i]
