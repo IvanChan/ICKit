@@ -48,11 +48,11 @@ open class ICCollectionViewController<T>: UIViewController, UICollectionViewData
     public private(set) var isFirstLoad:Bool = true
     
     //MARK: - DataItem
-    lazy var sectionItems:[[T]] = []
+    public lazy var sectionItems:[[T]] = []
     
     //MARK: - UICollectionViewDataSource
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sectionItems.count
+        return sectionCount()
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -292,9 +292,6 @@ extension ICCollectionViewController {
 
 //MARK: - DataItem
 extension ICCollectionViewController {
-    public func replaceSectionItems(_ items:[[T]]) {
-        sectionItems = items
-    }
     
     public func dataItem(at indexPath:IndexPath) -> T {
         return self.sectionItems[indexPath.section][indexPath.row]
