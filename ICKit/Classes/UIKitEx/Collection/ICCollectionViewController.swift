@@ -8,7 +8,8 @@
 
 import UIKit
 
-open class ICCollectionViewController<T>: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+public typealias T = Any
+open class ICCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     public private(set) lazy var collectionView:ICCollectionView = {
         let view = ICCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
