@@ -9,7 +9,7 @@
 import UIKit
 
 public typealias T = Any
-open class ICCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+open class ICCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public private(set) lazy var collectionView:ICCollectionView = {
         let view = ICCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())

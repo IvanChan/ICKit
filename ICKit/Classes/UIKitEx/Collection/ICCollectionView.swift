@@ -165,7 +165,7 @@ open class ICCollectionView: UICollectionView {
 
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
-        scrollProxy.delegate = self
+        scrollProxy.proxyDelegate = self
     }
     
     required public init?(coder: NSCoder) {
