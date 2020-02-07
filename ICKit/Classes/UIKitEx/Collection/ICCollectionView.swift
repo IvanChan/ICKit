@@ -144,7 +144,7 @@ fileprivate class ScrollDelegateProxy:NSObject, UIScrollViewDelegate {
     }
 }
 
-public class ICCollectionView: UICollectionView {
+open class ICCollectionView: UICollectionView {
     
     private var scrollProxy = ScrollDelegateProxy()
     override public var delegate: UICollectionViewDelegate? {
@@ -201,6 +201,7 @@ extension ICCollectionView {
         batchFetchingDelegate?.startBatchFetching(with: batchFetchingContext)
     }
 }
+
 extension ICCollectionView: UIScrollViewDelegate {
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         _beginBatchFetchingIfNeeded(with: targetContentOffset.pointee, velocity: velocity)

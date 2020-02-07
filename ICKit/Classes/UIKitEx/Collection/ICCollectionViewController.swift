@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class ICCollectionViewController<T>: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+open class ICCollectionViewController<T>: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     private(set) lazy var collectionView:ICCollectionView = {
         let view = ICCollectionView()
