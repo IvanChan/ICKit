@@ -292,6 +292,10 @@ extension ICCollectionViewController {
 
 //MARK: - DataItem
 extension ICCollectionViewController {
+    public func replaceSectionItems(_ items:[[T]]) {
+        sectionItems = items
+    }
+    
     public func dataItem(at indexPath:IndexPath) -> T {
         return self.sectionItems[indexPath.section][indexPath.row]
     }
