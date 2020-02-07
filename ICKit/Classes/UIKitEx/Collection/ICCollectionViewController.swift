@@ -10,7 +10,7 @@ import UIKit
 
 open class ICCollectionViewController<T>: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    private(set) lazy var collectionView:ICCollectionView = {
+    public private(set) lazy var collectionView:ICCollectionView = {
         let view = ICCollectionView()
         view.showsVerticalScrollIndicator = false
         view.showsHorizontalScrollIndicator = false
@@ -42,14 +42,13 @@ open class ICCollectionViewController<T>: UIViewController, UICollectionViewData
     }
 
     //MARK: - Loading
-    internal var isLoadingNewData:Bool = false
-    internal var isLoadingMoreData:Bool = false
-    internal var hasMoreData:Bool = true
-    private var isFirstLoad:Bool = true
+    public var isLoadingNewData:Bool = false
+    public var isLoadingMoreData:Bool = false
+    public var hasMoreData:Bool = true
+    public private(set) var isFirstLoad:Bool = true
     
     //MARK: - DataItem
-    lazy internal var sectionItems:[[T]] = []
-
+    public lazy var sectionItems:[[T]] = []
     
     //MARK: - UICollectionViewDataSource
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -75,16 +74,16 @@ extension ICCollectionViewController: ICCollectionViewBatchFetchingDelegate {
 //MARK: - Loading
 extension ICCollectionViewController {
     
-    func isLoadingData() -> Bool {
+    public func isLoadingData() -> Bool {
         return self.isLoadingNewData || self.isLoadingMoreData
     }
 
     //MARK: Load New
-    internal func shouldLoadNewData() -> Bool {
+    public func shouldLoadNewData() -> Bool {
         return !self.isLoadingData()
     }
     
-    internal func willLoadNewData() {
+    public func willLoadNewData() {
         
     }
     
@@ -107,6 +106,8 @@ extension ICCollectionViewController {
                         DispatchQueue.mainSync {
                             let isFirstLoad = self.isFirstLoad
                             self.isFirstLoad = false
+                            self.hasMoreData = hasMore
+                            self.isLoadingNewData = false
                             self.didFinishLoadNewData(results, error, hasMore, isFirstLoad)
                         }
                     }
@@ -120,7 +121,7 @@ extension ICCollectionViewController {
     /// Override to customise your own load new data logic
     ///
     /// - Parameter completion: You HAVE TO call the completion as soon as you're finished performing that operation
-    internal func loadNewData(isFirstLoad:Bool, _ completion: @escaping (_ results:[T], _ error:Error?, _ hasMore:Bool)->Swift.Void) {
+    public func loadNewData(isFirstLoad:Bool, _ completion: @escaping (_ results:[T], _ error:Error?, _ hasMore:Bool)->Swift.Void) {
         completion([], nil, false)
     }
     
@@ -130,7 +131,7 @@ extension ICCollectionViewController {
     ///   - results: Data from loadNewData
     ///   - error: Loading error, nil means succeed
     ///   - processCompletion: finish process data, you HAVE TO call the processCompletion as soon as you're finished performing that operation
-    internal func processLoadNewDataResult(_ results:[T], _ error:Error?, _ shouldClearOldData:Bool, _ isFirstLoad:Bool, _ processCompletion:@escaping ()->Void) {
+    public func processLoadNewDataResult(_ results:[T], _ error:Error?, _ shouldClearOldData:Bool, _ isFirstLoad:Bool, _ processCompletion:@escaping ()->Void) {
         guard results.count > 0 else {
             if shouldClearOldData {
                 sectionItems.removeAll()
@@ -189,17 +190,16 @@ extension ICCollectionViewController {
     ///   - results: Data processed
     ///   - error: Loading error, nil means succeed
     ///   - isFirstLoad: Whether is first time load operation
-    internal func didFinishLoadNewData(_ results:[T], _ error:Error?, _ hasMore:Bool, _ isFirstLoad:Bool) {
-        hasMoreData = hasMore
-        isLoadingNewData = false
+    public func didFinishLoadNewData(_ results:[T], _ error:Error?, _ hasMore:Bool, _ isFirstLoad:Bool) {
+       
     }
     
     //MARK: Load more
-    internal func shouldLoadMoreData() -> Bool {
+    public func shouldLoadMoreData() -> Bool {
         return self.hasMoreData && !self.isLoadingData()
     }
     
-    internal func willLoadMoreData() {
+    public func willLoadMoreData() {
         
     }
     
@@ -223,6 +223,8 @@ extension ICCollectionViewController {
                 DispatchQueue.mainSync {
                     let isFirstLoad = self.isFirstLoad
                     self.isFirstLoad = false
+                    self.hasMoreData = hasMore
+                    self.isLoadingMoreData = false
                     self.didFinishLoadMoreData(results, error, hasMore, isFirstLoad)
                 }
             }
@@ -232,7 +234,7 @@ extension ICCollectionViewController {
     /// Override to customise your own load more data logic
     ///
     /// - Parameter completion: completion([], nil) means load successfully but no more data, won't call loadMoreData after, You HAVE TO call the completion as soon as you're finished performing that operation
-    internal func loadMoreData(isFirstLoad:Bool, _ completion:  @escaping (_ results:[T], _ error:Error?, _ hasMore:Bool)->Swift.Void) {
+    public func loadMoreData(isFirstLoad:Bool, _ completion:  @escaping (_ results:[T], _ error:Error?, _ hasMore:Bool)->Swift.Void) {
         completion([], nil, false)
     }
     
@@ -243,7 +245,7 @@ extension ICCollectionViewController {
     ///   - results: Data loaded from loadMoreData
     ///   - error:  Loading error, nil means succeed
     ///   - isFirstLoad: Whether is first time load operation
-    internal func processLoadMoreDataResult(_ results:[T], _ error:Error?, _ isFirstLoad:Bool) {
+    public func processLoadMoreDataResult(_ results:[T], _ error:Error?, _ isFirstLoad:Bool) {
         guard results.count > 0 else {
             return
         }
@@ -273,15 +275,14 @@ extension ICCollectionViewController {
         }
     }
     
-    /// Override to do own stuff after process more data, but do NOT forget to call super
+    /// Override to do own stuff after process more data
     ///
     /// - Parameters:
     ///   - results: Data processed
     ///   - error: Loading error, nil means succeed
     ///   - isFirstLoad: Whether is first time load operation
-    internal func didFinishLoadMoreData(_ results:[T], _ error:Error?, _ hasMore:Bool, _ isFirstLoad:Bool) {
-        hasMoreData = hasMore
-        isLoadingMoreData = false
+    public func didFinishLoadMoreData(_ results:[T], _ error:Error?, _ hasMore:Bool, _ isFirstLoad:Bool) {
+ 
     }
 }
 
