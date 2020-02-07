@@ -11,7 +11,7 @@ import UIKit
 open class ICCollectionViewController<T>: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     public private(set) lazy var collectionView:ICCollectionView = {
-        let view = ICCollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+        let view = ICCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         view.showsVerticalScrollIndicator = false
         view.showsHorizontalScrollIndicator = false
         view.dataSource = self
