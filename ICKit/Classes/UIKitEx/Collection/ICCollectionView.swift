@@ -168,7 +168,7 @@ open class ICCollectionView: UICollectionView {
         scrollProxy.delegate = self
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
