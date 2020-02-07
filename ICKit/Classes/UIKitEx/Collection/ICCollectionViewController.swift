@@ -48,11 +48,15 @@ open class ICCollectionViewController<T>: UIViewController, UICollectionViewData
     public private(set) var isFirstLoad:Bool = true
     
     //MARK: - DataItem
-    public lazy var sectionItems:[[T]] = []
+    lazy var sectionItems:[[T]] = []
     
     //MARK: - UICollectionViewDataSource
-    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sectionItems.count
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return sectionItemCount(at: section)
     }
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -350,6 +354,17 @@ extension ICCollectionViewController {
 
     public func dataItemCount() -> Int {
         return sectionItems.flatMap({$0}).count
+    }
+    
+    public func sectionCount() -> Int {
+        return sectionItems.count
+    }
+    
+    public func sectionItemCount(at section:Int) -> Int {
+        if section < 0 || section >= sectionItems.count {
+            return 0
+        }
+        return sectionItems[section].count
     }
     
     public func firstDataItem(where condition: ((T) -> Bool)? = nil) -> T? {
