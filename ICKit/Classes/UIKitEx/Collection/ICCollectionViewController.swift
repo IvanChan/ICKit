@@ -19,7 +19,7 @@ open class ICCollectionViewController<T>: UIViewController, UICollectionViewData
         return view
     }()
     
-    init(collectionViewLayout layout: UICollectionViewLayout) {
+    public init(collectionViewLayout layout: UICollectionViewLayout) {
         super.init(nibName: nil, bundle: nil)
         collectionView.collectionViewLayout = layout
     }
@@ -28,7 +28,7 @@ open class ICCollectionViewController<T>: UIViewController, UICollectionViewData
         fatalError("init(coder:) has not been implemented")
     }
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
@@ -36,7 +36,7 @@ open class ICCollectionViewController<T>: UIViewController, UICollectionViewData
         view.addSubview(collectionView)
     }
     
-    override public func viewWillLayoutSubviews() {
+    override open func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         collectionView.frame = view.bounds
     }
@@ -52,11 +52,11 @@ open class ICCollectionViewController<T>: UIViewController, UICollectionViewData
 
     
     //MARK: - UICollectionViewDataSource
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return sectionItems.count
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return UICollectionViewCell()
     }
 }
