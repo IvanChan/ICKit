@@ -59,7 +59,7 @@ open class ICColorButton: UIButton {
     
     //---------------- border Color ------------------
     private func reloadBorderColor() {
-        self.backgroundColor = self.borderColor(for: self.state)
+        self.layer.borderColor = self.borderColor(for: self.state)?.cgColor
     }
     
     open func setBorderColor(_ color: UIColor?, for state: UIControl.State) {
@@ -73,5 +73,17 @@ open class ICColorButton: UIButton {
     
     open func borderColor(for state: UIControl.State) -> UIColor? {
         return self.borderColorsForStates[state.rawValue]
+    }
+    
+    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+                reloadBorderColor()
+            }
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }

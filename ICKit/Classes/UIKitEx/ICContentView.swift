@@ -10,11 +10,7 @@ import UIKit
 
 open class ICContentView: UIView {
     
-    public lazy var contentView: UIView = {
-        let contentView = UIView()
-        self.addSubview(contentView)
-        return contentView
-    }()
+    public lazy var contentView: UIView = UIView()
     
     override open var frame: CGRect {
         didSet {
@@ -28,10 +24,11 @@ open class ICContentView: UIView {
         }
     }
     
-    public init(frame: CGRect, contentInsets: UIEdgeInsets = UIEdgeInsets.init(top: 20, left: 20, bottom: 20, right: 20)) {
+    public init(frame: CGRect, contentInsets: UIEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)) {
         super.init(frame: frame)
         self.contentInsets = contentInsets
-        self.contentView.frame = self.bounds.inset(by: self.contentInsets)
+        contentView.frame = bounds.inset(by: self.contentInsets)
+        addSubview(contentView)
     }
     
     required public init?(coder aDecoder: NSCoder) {

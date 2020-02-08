@@ -10,39 +10,52 @@ import UIKit
 
 open class ICPopupView: UIView {
     
-    public var backgroundMask: UIControl!
-    public var containerView: UIView!
-    public var contentView: UIView!
+    public lazy var backgroundMask: UIControl = {
+        let view = UIControl(frame: self.bounds)
+        view.backgroundColor = UIColor.black
+        view.alpha = 0
+        view.addTarget(self, action: #selector(hide), for: .touchUpInside)
+        return view
+    }()
+    
+    public lazy var containerView: UIView = {
+        let containerView = UIView(frame: CGRect(x: CGFloat(edgeMargin), y: bounds.maxY, width: bounds.width - CGFloat(edgeMargin*2), height: 0))
+        containerView.backgroundColor = UIColor.white
+        
+        containerView.layer.cornerRadius = 12
+        containerView.layer.masksToBounds = true
+        //        let maskLayer = CAShapeLayer()
+        //        maskLayer.path = UIBezierPath(roundedRect: self.containerView.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: 12, height: 12)).cgPath
+        //        self.containerView.layer.mask = maskLayer
+        
+        return containerView
+    }()
+    
+    public lazy var contentView: UIView = {
+        let contentView = UIView(frame: containerView.bounds.inset(by: UIEdgeInsets(top: contentMargin/2, left: contentMargin, bottom: contentMargin/2, right: contentMargin)))
+        return contentView
+    }()
     
     public let edgeMargin = 10
-    public static let contentMargin: CGFloat = 20
+    var contentMargin: CGFloat = 20 {
+        didSet {
+            contentView.frame = containerView.bounds.inset(by: UIEdgeInsets(top: contentMargin/2, left: contentMargin, bottom: contentMargin/2, right: contentMargin))
+        }
+    }
     
     public init(containerHeight: CGFloat = 300) {
         
         super.init(frame: UIScreen.main.bounds)
         
         // Background mask
-        self.backgroundMask = UIControl(frame: self.bounds)
-        self.backgroundMask.backgroundColor = UIColor.black
-        self.backgroundMask.alpha = 0
-        self.backgroundMask.addTarget(self, action: #selector(ICPopupView.hide), for: .touchUpInside)
-        self.addSubview(self.backgroundMask)
+        addSubview(backgroundMask)
         
         // Container
-        self.containerView = UIView(frame: CGRect(x: CGFloat(self.edgeMargin), y: self.bounds.maxY, width: self.bounds.width - CGFloat(self.edgeMargin*2), height: containerHeight))
-        self.containerView.backgroundColor = UIColor.white
-        
-        self.containerView.layer.cornerRadius = 12
-        self.containerView.layer.masksToBounds = true
-        //        let maskLayer = CAShapeLayer()
-        //        maskLayer.path = UIBezierPath(roundedRect: self.containerView.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: 12, height: 12)).cgPath
-        //        self.containerView.layer.mask = maskLayer
-        
-        self.addSubview(self.containerView)
+        containerView.frame.size.height = containerHeight
+        addSubview(containerView)
         
         // Main
-        self.contentView = UIView(frame: self.containerView.bounds.inset(by: UIEdgeInsets.init(top: ICPopupView.contentMargin/2, left: ICPopupView.contentMargin, bottom: ICPopupView.contentMargin/2, right: ICPopupView.contentMargin)))
-        self.containerView.addSubview(self.contentView)
+        containerView.addSubview(contentView)
     }
     
     required public init?(coder aDecoder: NSCoder) {
