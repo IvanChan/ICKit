@@ -42,7 +42,7 @@ open class ICPopupView: UIView {
         }
     }
     
-    public init(containerHeight: CGFloat = 300) {
+    public init(contentHeight: CGFloat = 300) {
 
         super.init(frame: UIScreen.main.bounds)
         
@@ -50,6 +50,7 @@ open class ICPopupView: UIView {
         addSubview(backgroundMask)
         
         // Container
+        let containerHeight = contentHeight + containerView.contentInsets.top + containerView.contentInsets.bottom
         containerView.frame.size.height = containerHeight
         addSubview(containerView)
     }
