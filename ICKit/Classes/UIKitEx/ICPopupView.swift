@@ -12,7 +12,7 @@ open class ICPopupView: UIView {
     
     public lazy var backgroundMask: UIControl = {
         let view = UIControl(frame: self.bounds)
-        view.backgroundColor = UIColor.black
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.75)
         view.alpha = 0
         view.addTarget(self, action: #selector(hide), for: .touchUpInside)
         return view
@@ -75,7 +75,7 @@ open class ICPopupView: UIView {
                        options: [.curveEaseInOut, .beginFromCurrentState],
                        animations:  {
                         
-                        self.backgroundMask.alpha = 0.75
+                        self.backgroundMask.alpha = 1
                         
                         var frame: CGRect = self.containerView.frame
                         frame.origin.y = self.bounds.maxY - frame.height - CGFloat(self.edgeMargin)*3
