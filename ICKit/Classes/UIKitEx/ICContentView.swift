@@ -14,13 +14,13 @@ open class ICContentView: UIView {
     
     override open var frame: CGRect {
         didSet {
-            self.setNeedsLayout()
+            self.contentView.frame = self.bounds.inset(by: self.contentInsets)
         }
     }
     
     public var contentInsets: UIEdgeInsets = .zero {
         didSet {
-            self.setNeedsLayout()
+            self.contentView.frame = self.bounds.inset(by: self.contentInsets)
         }
     }
     
@@ -33,11 +33,5 @@ open class ICContentView: UIView {
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        self.contentView.frame = self.bounds.inset(by: self.contentInsets)
     }
 }
