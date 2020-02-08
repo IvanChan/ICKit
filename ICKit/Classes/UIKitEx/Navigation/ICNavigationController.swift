@@ -95,8 +95,8 @@ fileprivate class ICNavigationContext:NSObject, UINavigationControllerDelegate {
 
 open class ICNavigationController: UINavigationController, UIGestureRecognizerDelegate {
 
-    var isGestureEnabled:Bool = true
-    var forceHideAllNavigationBar:Bool = false
+    public var isGestureEnabled:Bool = true
+    public var forceHideAllNavigationBar:Bool = false
     
     private lazy var naviContext:ICNavigationContext = ICNavigationContext(self)
     
