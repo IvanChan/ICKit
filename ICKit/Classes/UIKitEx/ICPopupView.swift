@@ -31,6 +31,10 @@ open class ICPopupView: UIView {
         return containerView
     }()
     
+    public var contentView:UIView {
+        return containerView.contentView
+    }
+    
     var edgeMargin:CGFloat = 10 {
         didSet {
             containerView.frame.origin.x = edgeMargin
