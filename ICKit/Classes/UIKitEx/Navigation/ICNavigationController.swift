@@ -76,6 +76,10 @@ fileprivate class ICNavigationContext:NSObject, UINavigationControllerDelegate {
                 backItemStyle = next.backItemStyle()
             }
             
+            if let icNav = navigationController as? ICNavigationController, icNav.forceHideAllNavigationBar {
+                nextBarHidden = true
+            }
+            
             if nextBarHidden != currentBarHidden {
                 navigationController.setNavigationBarHidden(nextBarHidden, animated: true)
             }
@@ -92,6 +96,8 @@ fileprivate class ICNavigationContext:NSObject, UINavigationControllerDelegate {
 open class ICNavigationController: UINavigationController, UIGestureRecognizerDelegate {
 
     var isGestureEnabled:Bool = true
+    var forceHideAllNavigationBar:Bool = false
+    
     private lazy var naviContext:ICNavigationContext = ICNavigationContext(self)
     
     override open func viewDidLoad() {
