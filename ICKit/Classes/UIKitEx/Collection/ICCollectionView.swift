@@ -69,128 +69,34 @@ public protocol ICCollectionViewBatchFetchingDelegate: NSObjectProtocol {
     func startBatchFetching(with context:ICBatchFetchingContext)
 }
 
-fileprivate class ScrollDelegateProxy:NSObject, UIScrollViewDelegate {
-    
-    weak var proxyDelegate:UIScrollViewDelegate?
-    weak var delegate:UIScrollViewDelegate?
-
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        proxyDelegate?.scrollViewDidScroll?(scrollView)
-        delegate?.scrollViewDidScroll?(scrollView)
-    }
-
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        proxyDelegate?.scrollViewDidZoom?(scrollView)
-        delegate?.scrollViewDidZoom?(scrollView)
-    }
-
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        proxyDelegate?.scrollViewWillBeginDragging?(scrollView)
-        delegate?.scrollViewWillBeginDragging?(scrollView)
-    }
-
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        proxyDelegate?.scrollViewWillEndDragging?(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
-        delegate?.scrollViewWillEndDragging?(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
-    }
-
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        proxyDelegate?.scrollViewDidEndDragging?(scrollView, willDecelerate: decelerate)
-        delegate?.scrollViewDidEndDragging?(scrollView, willDecelerate: decelerate)
-    }
-
-    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        proxyDelegate?.scrollViewWillBeginDecelerating?(scrollView)
-        delegate?.scrollViewWillBeginDecelerating?(scrollView)
-    }
-
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        proxyDelegate?.scrollViewDidEndDecelerating?(scrollView)
-        delegate?.scrollViewDidEndDecelerating?(scrollView)
-    }
-
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        proxyDelegate?.scrollViewDidEndScrollingAnimation?(scrollView)
-        delegate?.scrollViewDidEndScrollingAnimation?(scrollView)
-    }
-
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return delegate?.viewForZooming?(in: scrollView)
-    }
-
-    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        proxyDelegate?.scrollViewWillBeginZooming?(scrollView, with: view)
-        delegate?.scrollViewWillBeginZooming?(scrollView, with: view)
-    }
-
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        proxyDelegate?.scrollViewDidEndZooming?(scrollView, with: view, atScale: scale)
-        delegate?.scrollViewDidEndZooming?(scrollView, with: view, atScale: scale)
-    }
-
-    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        return delegate?.scrollViewShouldScrollToTop?(scrollView) ?? true
-    }
-
-    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
-        proxyDelegate?.scrollViewDidScrollToTop?(scrollView)
-        delegate?.scrollViewDidScrollToTop?(scrollView)
-    }
-
-    @available(iOS 11.0, *)
-    func scrollViewDidChangeAdjustedContentInset(_ scrollView: UIScrollView) {
-        proxyDelegate?.scrollViewDidChangeAdjustedContentInset?(scrollView)
-        delegate?.scrollViewDidChangeAdjustedContentInset?(scrollView)
-    }
-}
-
 open class ICCollectionView: UICollectionView {
-    
-    private var scrollProxy = ScrollDelegateProxy()
-    override public var delegate: UICollectionViewDelegate? {
-        didSet {
-            scrollProxy.delegate = delegate
-        }
-    }
-    
+
     public weak var batchFetchingDelegate:ICCollectionViewBatchFetchingDelegate?
     private var batchFetchingContext = ICBatchFetchingContext()
     
     /// Defaults to two screenfuls.
     var leadingScreensForBatching:CGFloat = 2.0 {
         didSet {
-            _checkForBatchFetching()
+            checkForBatchFetching()
         }
     }
 
-    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
-        super.init(frame: frame, collectionViewLayout: layout)
-        scrollProxy.proxyDelegate = self
-    }
-    
-    required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override public func didMoveToWindow() {
         super.didMoveToWindow()
-        
-        if self.window != nil {
-            _checkForBatchFetching()
-        }
+        checkForBatchFetching()
     }
 }
 
 extension ICCollectionView {
-    fileprivate func _checkForBatchFetching() {
+    func checkForBatchFetching() {
         // Dragging will be handled in scrollViewWillEndDragging:withVelocity:targetContentOffset:
-        if (isDragging || isTracking) {
-            return;
+        if (window == nil || isDragging || isTracking) {
+            return
         }
-        _beginBatchFetchingIfNeeded(with: contentOffset, velocity: .zero)
+        beginBatchFetchingIfNeeded(with: contentOffset, velocity: .zero)
     }
     
-    fileprivate func _beginBatchFetchingIfNeeded(with contentOffset:CGPoint, velocity:CGPoint) {
+    func beginBatchFetchingIfNeeded(with contentOffset:CGPoint, velocity:CGPoint) {
         if batchFetchingDelegate?.shouldBeginBatchFetching() == true && batchFetchingContext.shouldFetchBatch(for: self, leadingScreens: leadingScreensForBatching, contentOffset: contentOffset, velocity: velocity) {
             _beginBatchFetching()
         }
@@ -199,11 +105,5 @@ extension ICCollectionView {
     fileprivate func _beginBatchFetching() {
         batchFetchingContext.beginBatchFetching()
         batchFetchingDelegate?.startBatchFetching(with: batchFetchingContext)
-    }
-}
-
-extension ICCollectionView: UIScrollViewDelegate {
-    public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        _beginBatchFetchingIfNeeded(with: targetContentOffset.pointee, velocity: velocity)
     }
 }

@@ -63,6 +63,13 @@ open class ICCollectionViewController: UIViewController, UICollectionViewDataSou
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return UICollectionViewCell()
     }
+    
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        collectionView.checkForBatchFetching()
+    }
+    open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        collectionView.beginBatchFetchingIfNeeded(with: targetContentOffset.pointee, velocity: velocity)
+     }
 }
 
 //MARK: - ICCollectionViewBatchFetchingDelegate
