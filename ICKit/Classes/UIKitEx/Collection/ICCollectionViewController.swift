@@ -100,8 +100,9 @@ extension ICCollectionViewController {
     }
     
     final func fetchNewData() {
-        DispatchQueue.mainSync {
-            
+        DispatchQueue.mainSync { [weak self] in
+            guard let self = self else {return}
+
             if !self.shouldLoadNewData() {
                 return
             }
@@ -115,7 +116,9 @@ extension ICCollectionViewController {
                     guard let self = self else {return}
                     self.processLoadNewDataResult(results, error, false, self.isFirstLoad) { [weak self] in
                         guard let self = self else {return}
-                        DispatchQueue.mainSync {
+                        DispatchQueue.mainSync { [weak self] in
+                            guard let self = self else {return}
+
                             let isFirstLoad = self.isFirstLoad
                             self.isFirstLoad = false
                             self.hasMoreData = hasMore
@@ -158,7 +161,9 @@ extension ICCollectionViewController {
             return
         }
         
-        DispatchQueue.mainSync {
+        DispatchQueue.mainSync { [weak self] in
+            guard let self = self else {return}
+
             if shouldClearOldData {
                 sectionItems.removeAll()
                 self.sectionItems.append(results)
@@ -216,8 +221,9 @@ extension ICCollectionViewController {
     }
     
     final func fetchMoreData(_ context:ICBatchFetchingContext? = nil) {
-        DispatchQueue.mainSync {
-            
+        DispatchQueue.mainSync { [weak self] in
+            guard let self = self else {return}
+
             if !self.shouldLoadMoreData() {
                 return
             }
@@ -232,7 +238,9 @@ extension ICCollectionViewController {
                 context?.completeBatchFetching(true)
                 
                 self.processLoadMoreDataResult(results, error, self.isFirstLoad)
-                DispatchQueue.mainSync {
+                DispatchQueue.mainSync { [weak self] in
+                    guard let self = self else {return}
+
                     let isFirstLoad = self.isFirstLoad
                     self.isFirstLoad = false
                     self.hasMoreData = hasMore
@@ -262,7 +270,8 @@ extension ICCollectionViewController {
             return
         }
         
-        DispatchQueue.mainSync {
+        DispatchQueue.mainSync { [weak self] in
+            guard let self = self else {return}
 
             if var lastSectionItem = self.sectionItems.last {
                 let lastSection = max(0,self.sectionItems.count-1)
