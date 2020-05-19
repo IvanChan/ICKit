@@ -9,13 +9,13 @@
 import UIKit
 import AsyncDisplayKit
 
-protocol ICNestedScrollContextDataSource:NSObjectProtocol {
-    func mainScrollView() -> UIScrollView
-    func embeddedScrollView() -> UIScrollView
+public protocol ICNestedScrollContextDataSource:NSObjectProtocol {
+    func mainScrollView() -> UIScrollView?
+    func embeddedScrollView() -> UIScrollView?
     func triggerOffset() -> CGPoint
 }
 
-class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
+public class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
     
     weak var dataSource:ICNestedScrollContextDataSource?
     
@@ -36,12 +36,14 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
 
     public var deceleratingFactor:CGFloat = 120
     
-    init(dataSource:ICNestedScrollContextDataSource) {
+    public init(dataSource:ICNestedScrollContextDataSource) {
         self.dataSource = dataSource
         super.init()
     }
     
-    @objc func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    @objc public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        guard let embeddedScrollView = self.embeddedScrollView, let mainScrollView = self.mainScrollView else {return}
+
         if scrollView == mainScrollView {
             isMainScrollViewDragging = true
         } else if scrollView == embeddedScrollView {
@@ -49,17 +51,16 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
         }
     }
     
-    @objc func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    @objc public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
+        guard let embeddedScrollView = self.embeddedScrollView, let mainScrollView = self.mainScrollView else {return}
+
         if scrollView == mainScrollView {
             if isEmbeddedScrollViewDragging {
                 return
             }
             
             let triggerOffset = self.triggerOffset
-            guard let embeddedScrollView = self.embeddedScrollView else {
-                return
-            }
             
             let scrollStep = scrollView.contentOffset.y - triggerOffset.y
             if scrollStep > 0 {
@@ -93,9 +94,6 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
             }
             
             let triggerOffset = self.triggerOffset
-            guard let mainScrollView = self.mainScrollView else {
-                return
-            }
 
             let mainCurrentY = mainScrollView.contentOffset.y
             let isScrollToListArea = mainCurrentY >= triggerOffset.y
@@ -115,12 +113,12 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
         }
     }
     
-    @objc func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    @objc public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard let embeddedScrollView = self.embeddedScrollView, let mainScrollView = self.mainScrollView else {return}
+
         if scrollView == mainScrollView {
             isMainScrollViewDragging = false
             
-            guard let embeddedScrollView = self.embeddedScrollView else {return}
-
             let maxOffsetY = max(0, embeddedScrollView.contentSize.height - embeddedScrollView.bounds.height)
             if embeddedScrollView.contentOffset.y > maxOffsetY {
                 UIView.animate(withDuration: 0.3,
@@ -157,7 +155,6 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
         } else if scrollView == embeddedScrollView {
             isEmbeddedScrollViewDragging = false
             
-            guard let mainScrollView = self.mainScrollView else {return}
             let triggerOffset = self.triggerOffset
 
             if mainScrollView.contentOffset.y > 0 {
