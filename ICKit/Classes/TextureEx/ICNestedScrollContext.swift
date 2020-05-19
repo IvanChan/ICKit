@@ -162,17 +162,21 @@ class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
 
             if mainScrollView.contentOffset.y > 0 {
                 
-                UIView.animate(withDuration: 0.5,
-                               delay: 0,
-                               options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
-                               animations: {
-                                
-                                var pos = mainScrollView.contentOffset
-                                pos.y = max(0, min(pos.y + velocity.y*self.deceleratingFactor, triggerOffset.y))
-                                
-                                mainScrollView.setContentOffsetWithoutNotifyDelegate(pos)
-                                
-                }) { (finished) in }
+                // if embeddedScrollView still not at top end
+                // let didscroll do its work
+                if embeddedScrollView.contentOffset.y <= 0 {
+                    UIView.animate(withDuration: 0.5,
+                                   delay: 0,
+                                   options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
+                                   animations: {
+                                    
+                                    var pos = mainScrollView.contentOffset
+                                    pos.y = max(0, min(pos.y + velocity.y*self.deceleratingFactor, triggerOffset.y))
+                                    
+                                    mainScrollView.setContentOffsetWithoutNotifyDelegate(pos)
+                                    
+                    }) { (finished) in }
+                }
             } else {
                 UIView.animate(withDuration: 0.3,
                                delay: 0,
