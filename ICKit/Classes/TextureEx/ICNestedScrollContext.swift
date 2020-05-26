@@ -41,6 +41,7 @@ public class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
         super.init()
     }
     
+    private var scrollViewinitialOffset:CGPoint = .zero
     @objc public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         guard let embeddedScrollView = self.embeddedScrollView, let mainScrollView = self.mainScrollView else {return}
 
@@ -49,6 +50,8 @@ public class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
         } else if scrollView == embeddedScrollView {
             isEmbeddedScrollViewDragging = true
         }
+        
+        scrollViewinitialOffset = scrollView.contentOffset
     }
     
     @objc public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -77,16 +80,16 @@ public class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
                 embeddedScrollView.setContentOffsetWithoutNotifyDelegate(flowPos)
                 
             } else {
-                if embeddedScrollView.contentOffset.y > 0 {
-                    var flowPos = embeddedScrollView.contentOffset
-                    flowPos.y = flowPos.y + (scrollView.contentOffset.y - triggerOffset.y)
-                    flowPos.y = max(0, flowPos.y)
-                    embeddedScrollView.setContentOffsetWithoutNotifyDelegate(flowPos)
-                    
-                    var pos = scrollView.contentOffset
-                    pos.y = triggerOffset.y
-                    scrollView.contentOffset = pos
-                }
+//                if embeddedScrollView.contentOffset.y > 0 {
+//                    var flowPos = embeddedScrollView.contentOffset
+//                    flowPos.y = flowPos.y + (scrollView.contentOffset.y - triggerOffset.y)
+//                    flowPos.y = max(0, flowPos.y)
+//                    embeddedScrollView.setContentOffsetWithoutNotifyDelegate(flowPos)
+//
+//                    var pos = scrollView.contentOffset
+//                    pos.y = triggerOffset.y
+//                    scrollView.contentOffset = pos
+//                }
             }
         } else if scrollView == embeddedScrollView {
             if isMainScrollViewDragging {
@@ -100,15 +103,24 @@ public class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
             
             if !isScrollToListArea || scrollView.contentOffset.y < 0 {
                 
+                let delta = scrollView.contentOffset.y - scrollViewinitialOffset.y
+
                 var pos = mainScrollView.contentOffset
-                pos.y = min(pos.y + scrollView.contentOffset.y, triggerOffset.y)
+                pos.y = min(pos.y + delta, triggerOffset.y)
                 if !isEmbeddedScrollViewDragging {
                     pos.y = max(0, pos.y)
                 }
                 
-                mainScrollView.setContentOffsetWithoutNotifyDelegate(pos)
                 
-                scrollView.contentOffset = .zero
+                if delta < 0 && scrollViewinitialOffset.y > 0 {
+                    scrollViewinitialOffset = CGPoint(0, max(0, scrollView.contentOffset.y))
+                } else {
+                    mainScrollView.setContentOffsetWithoutNotifyDelegate(pos)
+                    scrollView.setContentOffsetWithoutNotifyDelegate(scrollViewinitialOffset)
+                }
+
+            } else {
+                scrollViewinitialOffset = CGPoint(0, max(0, scrollView.contentOffset.y))
             }
         }
     }
@@ -119,59 +131,59 @@ public class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
         if scrollView == mainScrollView {
             isMainScrollViewDragging = false
             
-            let maxOffsetY = max(0, embeddedScrollView.contentSize.height - embeddedScrollView.bounds.height)
-            if embeddedScrollView.contentOffset.y > maxOffsetY {
-                UIView.animate(withDuration: 0.3,
-                               delay: 0,
-                               options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
-                               animations: {
-                                var pos = embeddedScrollView.contentOffset
-                                pos.y = maxOffsetY
-                                embeddedScrollView.setContentOffsetWithoutNotifyDelegate(pos)
-                                
-                }) { (finished) in }
-            } else if embeddedScrollView.contentOffset.y < maxOffsetY && embeddedScrollView.contentOffset.y > 0 {
-                
-                UIView.animate(withDuration: 0.5,
-                               delay: 0,
-                               options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
-                               animations: {
-                                
-                                var pos = embeddedScrollView.contentOffset
-                                pos.y = max(0, min(pos.y + velocity.y*self.deceleratingFactor, maxOffsetY))
-                                
-                                embeddedScrollView.setContentOffsetWithoutNotifyDelegate(pos)
-                                
-                }) { (finished) in }
-            } else {
-                UIView.animate(withDuration: 0.3,
-                               delay: 0,
-                               options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
-                               animations: {
-                                embeddedScrollView.setContentOffsetWithoutNotifyDelegate(.zero)
-                                
-                }) { (finished) in }
-            }
+//            let maxOffsetY = max(0, embeddedScrollView.contentSize.height - embeddedScrollView.bounds.height)
+//            if embeddedScrollView.contentOffset.y > maxOffsetY {
+//                UIView.animate(withDuration: 0.3,
+//                               delay: 0,
+//                               options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
+//                               animations: {
+//                                var pos = embeddedScrollView.contentOffset
+//                                pos.y = maxOffsetY
+//                                embeddedScrollView.setContentOffsetWithoutNotifyDelegate(pos)
+//
+//                }) { (finished) in }
+//            } else if embeddedScrollView.contentOffset.y < maxOffsetY && embeddedScrollView.contentOffset.y > 0 {
+//
+//                UIView.animate(withDuration: 0.5,
+//                               delay: 0,
+//                               options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
+//                               animations: {
+//
+//                                var pos = embeddedScrollView.contentOffset
+//                                pos.y = max(0, min(pos.y + velocity.y*self.deceleratingFactor, maxOffsetY))
+//
+//                                embeddedScrollView.setContentOffsetWithoutNotifyDelegate(pos)
+//
+//                }) { (finished) in }
+//            } else {
+//                UIView.animate(withDuration: 0.3,
+//                               delay: 0,
+//                               options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
+//                               animations: {
+//                                embeddedScrollView.setContentOffsetWithoutNotifyDelegate(.zero)
+//
+//                }) { (finished) in }
+//            }
         } else if scrollView == embeddedScrollView {
             isEmbeddedScrollViewDragging = false
             
             let triggerOffset = self.triggerOffset
 
             if mainScrollView.contentOffset.y > 0 {
-                
+
                 // if embeddedScrollView still not at top end
                 // let didscroll do its work
-                if embeddedScrollView.contentOffset.y <= 0 {
-                    UIView.animate(withDuration: 0.5,
+                if velocity.y < 0 && embeddedScrollView.contentOffset.y <= 0 {
+                    UIView.animate(withDuration: 0.3,
                                    delay: 0,
                                    options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
                                    animations: {
-                                    
+
                                     var pos = mainScrollView.contentOffset
                                     pos.y = max(0, min(pos.y + velocity.y*self.deceleratingFactor, triggerOffset.y))
-                                    
+
                                     mainScrollView.setContentOffsetWithoutNotifyDelegate(pos)
-                                    
+
                     }) { (finished) in }
                 }
             } else {
@@ -180,7 +192,7 @@ public class ICNestedScrollContext: NSObject, UIScrollViewDelegate {
                                options: [.beginFromCurrentState, .curveEaseOut, .allowUserInteraction],
                                animations: {
                                 mainScrollView.setContentOffsetWithoutNotifyDelegate(.zero)
-                                
+
                 }) { (finished) in }
             }
         }
