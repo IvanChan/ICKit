@@ -20,7 +20,7 @@ public protocol ICKitCompatible {
 }
 
 public extension ICKitCompatible {
-    public var ic: ICKit<Self>{
+    var ic: ICKit<Self>{
         get { return ICKit(self) }
     }
 }
