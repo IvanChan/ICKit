@@ -10,7 +10,7 @@ import Foundation
 import WCDBSwift
 
 public struct ICDatabaseTable<Root: TableDecodable> {
-    enum TableType {
+    public enum TableType {
         case cache
         case content
         case user
