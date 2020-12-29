@@ -10,7 +10,7 @@ import Foundation
 import WCDBSwift
 
 public struct ICDatabaseTable<Root: TableDecodable> {
-    public enum TableType {
+      public enum TableType {
         case cache
         case content
         case user
@@ -23,9 +23,15 @@ public struct ICDatabaseTable<Root: TableDecodable> {
             }
         }
     }
-    var tablename:String
-    var tableType:TableType
-    var rootType: Root.Type
+    public private(set) var tablename:String
+    public private(set) var tableType:TableType
+    public private(set) var rootType: Root.Type
+    
+    public init(tablename:String, tableType:TableType, rootType:Root.Type) {
+        self.tablename = tablename
+        self.tableType = tableType
+        self.rootType = rootType
+    }
     
     public func database() throws ->Database {
         return try tableType.database()
